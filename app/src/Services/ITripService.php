@@ -4,5 +4,5 @@ namespace App\Services;
 
 interface ITripService
 {
-    public function getAllTrips(): array;
+    public function getAllTrips(int $userId): array;
 }

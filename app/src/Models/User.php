@@ -4,9 +4,10 @@ namespace App\Models;
 
 class User {
     public $id;
-    public $firstName;
-    public $lastName;
+    public $first_name;
+    public $last_name;
     public $email;
-    public $passwordHash;
+    public $password;
     public $username;
+    public $created_at;
 }

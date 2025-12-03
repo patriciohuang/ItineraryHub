@@ -12,12 +12,27 @@ class TripController
 
     public function __construct()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
         $this->tripService = new TripService();
     }
 
     public function home()
     {
-        $trips = $this->tripService->getAllTrips();
-        require_once __DIR__ . '/../views/home.php';
+        $userId = $_SESSION['user_id'];
+        $trips = $this->tripService->getAllTrips($userId);
+        require __DIR__ . '/../Views/trip/Home.php';
+    }
+
+    public function showAddTrip()
+    {
+        require __DIR__ . '/../Views/trip/Add-trip.php';
     }
 }

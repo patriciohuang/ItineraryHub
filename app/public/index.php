@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 require __DIR__ . '/../vendor/autoload.php';
 
 use FastRoute\RouteCollector;
@@ -7,6 +7,14 @@ use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
+    $r->addRoute('GET', '/add-trip', ['App\Controllers\TripController', 'showAddTrip']);
+
+
+    $r->addRoute('GET', '/login', ['App\Controllers\AuthController', 'showLogin']);
+    $r->addRoute('POST', '/login', ['App\Controllers\AuthController', 'login']);
+    $r->addRoute('GET', '/logout', ['App\Controllers\AuthController', 'logout']);
+    $r->addRoute('GET', '/register', ['App\Controllers\AuthController', 'showRegister']);
+    $r->addRoute('POST', '/register', ['App\Controllers\AuthController', 'register']);
 });
 
 $httpMethod = $_SERVER['REQUEST_METHOD'];
