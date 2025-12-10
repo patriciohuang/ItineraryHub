@@ -3,6 +3,6 @@
 namespace App\Models;
 
 class TripItemParticipant {
-    public $tripItemId;
-    public $userId;
+    public int $tripItemId;
+    public int $userId;
 }

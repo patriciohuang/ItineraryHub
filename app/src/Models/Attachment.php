@@ -3,8 +3,8 @@
 namespace App\Models;
 
 class Attachment {
-    public $id;
-    public $tripItemId;
-    public $filePath;
-    public $type;
+    public int $id;
+    public int $tripItemId;
+    public string $filePath;
+    public string $type;
 }

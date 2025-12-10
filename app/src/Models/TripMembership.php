@@ -12,11 +12,11 @@ class TripMembership {
     public const ROLE_COLLABORATOR = 'COLLABORATOR';
     public const ROLE_PARTICIPANT = 'PARTICIPANT';
 
-    public $id;
-    public $tripId;
-    public $userId;
-    public $membershipStatus;
-    public $role;
-    public $roleOffered;
-    public $invitedBy;
+    public int $id;
+    public int $tripId;
+    public int $userId;
+    public string $membershipStatus;
+    public string $role;
+    public string $roleOffered;
+    public int $invitedBy;
 }

@@ -8,6 +8,8 @@ use function FastRoute\simpleDispatcher;
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
     $r->addRoute('GET', '/add-trip', ['App\Controllers\TripController', 'showAddTrip']);
+    $r->addRoute('POST', '/add-trip', ['App\Controllers\TripController', 'addTrip']);
+    $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);
 
 
     $r->addRoute('GET', '/login', ['App\Controllers\AuthController', 'showLogin']);
