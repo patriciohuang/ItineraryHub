@@ -1,4 +1,4 @@
-<footer class="text-center text-muted py-4 mt-5">
+    <footer class="text-center text-muted py-4 mt-5">
         <small>&copy; <?php echo date('Y'); ?> Itinerary Hub - Patricio Huang</small>
     </footer>
 

@@ -3,11 +3,11 @@
 namespace App\Models;
 
 class User {
-    public $id;
-    public $first_name;
-    public $last_name;
-    public $email;
-    public $password;
-    public $username;
-    public $created_at;
+    public int $id;
+    public string $first_name;
+    public string $last_name;
+    public string $email;
+    public string $password;
+    public string $username;
+    public string $created_at;
 }
