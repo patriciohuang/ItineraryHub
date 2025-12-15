@@ -35,4 +35,25 @@ class TripService implements ITripService
 
         return $trip;
     }
+
+    public function getAllCategories(): array
+    {
+        return $this->tripRepository->getAllCategories();
+    }
+
+    public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int
+    {
+        return $this->tripRepository->createTripItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+    }
+
+    public function addAttachment(int $tripItemId, string $filePath, string $type): void
+    {
+        $this->tripRepository->addAttachment($tripItemId, $filePath, $type);
+    }
+
+    public function getTripItems(int $userId, int $tripId): array
+    {
+        $this->getTripById($userId, $tripId);
+        return $this->tripRepository->getTripItems($userId, $tripId);
+    }
 }

@@ -52,13 +52,13 @@ class TripController
             exit;
         }
 
-        if(empty($startDate) || empty($endDate)) {
+        if (empty($startDate) || empty($endDate)) {
             $_SESSION['error'] = 'Start date and end date are required.';
             header('Location: /add-trip');
             exit;
         }
 
-        if(strtotime($startDate) > strtotime($endDate)) {
+        if (strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = 'Start date cannot be later than end date.';
             header('Location: /add-trip');
             exit;
@@ -82,10 +82,87 @@ class TripController
         try {
             $userId = $_SESSION['user_id'];
             $trip = $this->tripService->getTripById($userId, $id);
+            $items = $this->tripService->getTripItems($userId, $id);
             require __DIR__ . '/../Views/trip/detail.php';
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             header('Location: /');
+            exit;
+        }
+    }
+
+    public function showAddTripItem(array $params)
+    {
+        $tripId = (int) $params['id'];
+        
+        $categories = $this->tripService->getAllCategories();
+
+        $oldInput = $_SESSION['form_input'] ?? [];
+        unset($_SESSION['form_input']);
+        
+        require __DIR__ . '/../Views/trip/add-trip-item.php';
+    }
+
+    public function addTripItem(array $params)
+    {
+        $tripId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+
+        $title = $_POST['title'];
+        $startDate = $_POST['start_date'];
+        $endDate = $_POST['end_date'];
+        $url = $_POST['url'] ?? '';
+        $notes = $_POST['notes'] ?? '';
+        $categoryId = $_POST['category_id'] ?? null;
+
+        if (empty($title) || empty($startDate)) {
+            $_SESSION['error'] = "Title and Start Date are required.";
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId/add-trip-item");
+            exit;
+        }
+        if (strtotime($startDate) > strtotime($endDate)) {
+            $_SESSION['error'] = "Start Date cannot be later than End Date.";
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId/add-trip-item");
+            exit;
+        }
+        if (!is_numeric($categoryId) || (int)$categoryId <= 0) {
+            $_SESSION['error'] = "Category is required.";
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId/add-trip-item");
+            exit;
+        }
+
+        try {
+            $newItemId = $this->tripService->createTripItem($tripId, (int)$categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+            
+            if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
+                
+                $fileTmpPath = $_FILES['attachment']['tmp_name'];
+                $fileName = $_FILES['attachment']['name'];
+                $fileType = $_FILES['attachment']['type'];
+
+                $newFileName = uniqid() . '_' . $fileName;
+                
+                $uploadDir = __DIR__ . '/../../public/uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                
+                $destPath = $uploadDir . $newFileName;
+
+                if(move_uploaded_file($fileTmpPath, $destPath)) {
+                    $webPath = '/uploads/' . $newFileName;
+                    $this->tripService->addAttachment($newItemId, $webPath, $fileType);
+                }
+            }
+            $_SESSION['success'] = "Item added successfully!";
+            header("Location: /trip/$tripId");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error adding item: " . $e->getMessage();
+            header("Location: /trip/$tripId/add-trip-item");
             exit;
         }
     }

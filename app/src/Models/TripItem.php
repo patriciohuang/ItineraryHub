@@ -9,13 +9,14 @@ class TripItem {
     public const STATUS_PUBLISHED = 'PUBLISHED';
 
     public int $id;
-    public int $tripId;
+    public int $trip_id;
     public string $title;
-    public string $startDate;
-    public string $endDate;
-    public string $url;
-    public string $notes;
-    public int $categoryId;
+    public string $start_date;
+    public ?string $end_date;
+    public ?string $url;
+    public ?string $notes = null;
+    public int $category_id;
     public string $status;
-    public int $createdBy;
+    public int $created_by;
+    public string $category_name;
 }

@@ -10,7 +10,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/add-trip', ['App\Controllers\TripController', 'showAddTrip']);
     $r->addRoute('POST', '/add-trip', ['App\Controllers\TripController', 'addTrip']);
     $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);
-
+    $r->addRoute('GET', '/trip/{id}/add-trip-item', ['App\Controllers\TripController', 'showAddTripItem']);
+    $r->addRoute('POST', '/trip/{id}/add-trip-item', ['App\Controllers\TripController', 'addTripItem']);
 
     $r->addRoute('GET', '/login', ['App\Controllers\AuthController', 'showLogin']);
     $r->addRoute('POST', '/login', ['App\Controllers\AuthController', 'login']);

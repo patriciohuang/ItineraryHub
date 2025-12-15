@@ -25,7 +25,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Itinerary</h3>
-        <a class="btn btn-success" href="/trip/<?= $trip->id ?>/add-item"> + Add Item</a>
+        <a class="btn btn-success" href="/trip/<?= $trip->id ?>/add-trip-item"> + Add Item</a>
     </div>
 
     <?php if (empty($items)): ?>
@@ -34,7 +34,7 @@
             <p class="mt-3 text-muted">No items added yet. Start planning by clicking "Add Item"!</p>
         </div>
     <?php else: ?>
-        <?php require __DIR__ . '/../partials/trip-item.php'; ?>
+        <?php require __DIR__ . '/../trip/trip-item.php'; ?>
     <?php endif; ?>
 
 </div>
