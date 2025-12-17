@@ -48,27 +48,33 @@ class TripController
 
         if (empty($title)) {
             $_SESSION['error'] = 'Trip title is required.';
-            header('Location: /add-trip');
+            header('Location: /trip/add');
             exit;
         }
 
         if (empty($startDate) || empty($endDate)) {
             $_SESSION['error'] = 'Start date and end date are required.';
-            header('Location: /add-trip');
+            header('Location: /trip/add');
             exit;
         }
 
         if (strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = 'Start date cannot be later than end date.';
-            header('Location: /add-trip');
+            header('Location: /trip/add');
             exit;
         }
-        
-        $this->tripService->createTrip($userId, $title, $description, $startDate, $endDate);
+        try
+        {
+            $this->tripService->createTrip($userId, $title, $description, $startDate, $endDate);
 
-        $_SESSION['success'] = 'Trip created successfully.';
-        header('Location: /');
-        exit;
+            $_SESSION['success'] = 'Trip created successfully.';
+            header('Location: /');
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = 'Error creating trip: ' . $e->getMessage();
+            header('Location: /trip/add');
+            exit;
+        }
     }
 
     public function seeTripDetail(array $params)
@@ -91,8 +97,38 @@ class TripController
         }
     }
 
+    public function editTripDetail(array $params)
+    {
+        $tripId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $startDate = $_POST['start_date'];
+        $endDate = $_POST['end_date'];
+
+        if (empty($title) || empty($startDate) || empty($endDate)) {
+            $_SESSION['error'] = "Title and Dates are required.";
+            header("Location: /trip/$tripId");
+            exit;
+        }
+
+        try {
+            $this->tripService->updateTrip($tripId, $title, $description, $startDate, $endDate);
+            
+            $_SESSION['success'] = "Trip updated successfully!";
+            header("Location: /trip/$tripId");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error updating trip: " . $e->getMessage();
+            header("Location: /trip/$tripId");
+            exit;
+        }
+    }
+
     public function showAddTripItem(array $params)
     {
+        
         $tripId = (int) $params['id'];
         
         $categories = $this->tripService->getAllCategories();
@@ -118,19 +154,19 @@ class TripController
         if (empty($title) || empty($startDate)) {
             $_SESSION['error'] = "Title and Start Date are required.";
             $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/$tripId/add-trip-item");
+            header("Location: /trip/$tripId/item/add");
             exit;
         }
         if (strtotime($startDate) > strtotime($endDate)) {
-            $_SESSION['error'] = "Start Date cannot be later than End Date.";
+            $_SESSION['error'] = "Please ensure the dates are correct.";
             $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/$tripId/add-trip-item");
+            header("Location: /trip/$tripId/item/add");
             exit;
         }
         if (!is_numeric($categoryId) || (int)$categoryId <= 0) {
             $_SESSION['error'] = "Category is required.";
             $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/$tripId/add-trip-item");
+            header("Location: /trip/$tripId/item/add");
             exit;
         }
 
@@ -162,8 +198,22 @@ class TripController
             exit;
         } catch (\Exception $e) {
             $_SESSION['error'] = "Error adding item: " . $e->getMessage();
-            header("Location: /trip/$tripId/add-trip-item");
+            header("Location: /trip/$tripId/item/add");
             exit;
         }
+    }
+
+    public function showTripItemDetail(array $params)
+    {
+        $itemId = (int) $params['id'];
+        $item = $this->tripService->getTripItemById($itemId);
+        $attachment = $this->tripService->getAttachmentsByTripItemId($itemId);
+        if (!$item) {
+            $_SESSION['error'] = "Item not found.";
+            header("Location: /trip/$item->trip_id");
+            exit;
+        }
+
+        require __DIR__ . '/../Views/trip/trip-item-detail.php';
     }
 }

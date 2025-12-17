@@ -3,11 +3,16 @@
 
 <div class="container mt-4">
     <?php require __DIR__ . '/../partials/messages.php'; ?>
+    <div class="mb-3">
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h1 class="card-title text-primary"><?= htmlspecialchars($trip->title) ?></h1>
+                    <h2 class="card-title text-primary"><?= htmlspecialchars($trip->title) ?></h2>
                     <p class="text-muted">
                         <i class="bi bi-calendar3"></i> 
                         <?= date('M d, Y', strtotime($trip->start_date)) ?> 
@@ -17,7 +22,9 @@
                     <p><?= htmlspecialchars($trip->description ?? '') ?></p>
                 </div>
                 <div>
-                    <a href="/" class="btn btn-outline-secondary">Back to Dashboard</a>
+                    <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editTripModal">
+                        <i class="bi bi-pencil-square"></i> Edit Trip
+                    </button>
                 </div>
             </div>
         </div>
@@ -25,7 +32,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Itinerary</h3>
-        <a class="btn btn-success" href="/trip/<?= $trip->id ?>/add-trip-item"> + Add Item</a>
+        <a class="btn btn-success" href="/trip/<?= $trip->id ?>/item/add"> + Add Item</a>
     </div>
 
     <?php if (empty($items)): ?>
@@ -40,3 +47,4 @@
 </div>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
+<?php require __DIR__ . '/../trip/edit-trip-modal.php'; ?>

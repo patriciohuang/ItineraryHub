@@ -7,11 +7,17 @@ use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
-    $r->addRoute('GET', '/add-trip', ['App\Controllers\TripController', 'showAddTrip']);
-    $r->addRoute('POST', '/add-trip', ['App\Controllers\TripController', 'addTrip']);
+    $r->addRoute('GET', '/trip/add', ['App\Controllers\TripController', 'showAddTrip']);
+    $r->addRoute('POST', '/trip/add', ['App\Controllers\TripController', 'addTrip']);
     $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);
-    $r->addRoute('GET', '/trip/{id}/add-trip-item', ['App\Controllers\TripController', 'showAddTripItem']);
-    $r->addRoute('POST', '/trip/{id}/add-trip-item', ['App\Controllers\TripController', 'addTripItem']);
+    $r->addRoute('POST', '/trip/{id}', ['App\Controllers\TripController', 'editTripDetail']);
+
+    $r->addRoute('GET', '/trip/{id}/item/add', ['App\Controllers\TripController', 'showAddTripItem']);
+    $r->addRoute('POST', '/trip/{id}/item/add', ['App\Controllers\TripController', 'addTripItem']);
+    //TODO: implement edit and view trip item details
+    $r->addRoute('GET', '/trip/item/{id}', ['App\Controllers\TripController', 'showTripItemDetail']);
+    
+    $r->addRoute('POST', '/trip/item/{id}', ['App\Controllers\TripController', 'editTripItem']);
 
     $r->addRoute('GET', '/login', ['App\Controllers\AuthController', 'showLogin']);
     $r->addRoute('POST', '/login', ['App\Controllers\AuthController', 'login']);

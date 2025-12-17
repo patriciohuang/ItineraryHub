@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <h4>Add Item to Itinerary</h4>
+                    <h3>Add Item to Itinerary</h3>
                 </div>
                 <div class="card-body">
                     
@@ -16,7 +16,7 @@
                         
                         <div class="mb-3">
                             <label for="category" class="form-label">Type of Activity</label>
-                            <select name="category_id" id="category" class="form-select" required>
+                            <select name="category_id" id="category" class="form-select">
                                 <option value="" disabled <?= empty($oldInput['category_id']) ? 'selected' : '' ?>>
                                     Choose a category...
                                 </option>

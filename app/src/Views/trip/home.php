@@ -9,7 +9,7 @@
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>My Trips</h1>
-        <a href="/add-trip" class="btn btn-primary">
+        <a href="/trip/add" class="btn btn-primary">
             + Plan New Trip
         </a>
     </div>
@@ -17,7 +17,6 @@
     <?php require __DIR__ . '/../partials/messages.php'; ?>
 
     <div class="row">
-        
         <?php if (empty($vm->trips)): ?>
             <div class="col-12">
                 <div class="alert alert-info text-center">
@@ -26,14 +25,13 @@
                 </div>
             </div>
         <?php else: ?>
-            
             <?php foreach ($vm->trips as $trip): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 shadow-sm d-flex">
                         <div class="card-body">
-                            <h3 class="card-title text-primary mb-3">
+                            <h2 class="card-title text-primary mb-3 fs-3">
                                 <?= htmlspecialchars($trip->title) ?>
-                            </h3>
+                            </h2>
                             
                             <p class="card-subtitle mb-2 text-muted">
                                 <i class="bi bi-calendar3"></i> 
@@ -52,9 +50,7 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-
         <?php endif; ?>
-        
     </div>
 </div>
 

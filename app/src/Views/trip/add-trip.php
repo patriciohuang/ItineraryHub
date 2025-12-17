@@ -6,9 +6,9 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h2 class="card-title mb-4">Add a new trip</h2>
+                    <h3 class="card-title mb-4">Add a new trip</h3>
                     <?php require __DIR__ . '/../partials/messages.php'; ?>
-                    <form action="/add-trip" method="POST">
+                    <form action="/trip/add" method="POST">
                         
                         <div class="mb-3">
                             <label for="title" class="form-label">Trip Title</label>
