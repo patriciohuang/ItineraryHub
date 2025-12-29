@@ -2,7 +2,10 @@
 <?php require __DIR__ . '/../partials/navbar.php'; ?>
 
 <div class="container mt-4">
-    
+    <?php if (!isset($_SESSION['error_edit_item'])): ?>
+        <?php require __DIR__ . '/../partials/messages.php'; ?>
+    <?php endif; ?>
+
     <div class="mb-3">
         <a href="/trip/<?= $item->trip_id ?>" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Itinerary
@@ -54,9 +57,9 @@
                     <?php endif; ?>
                     
                     <div class="mt-4">
-                         <a href="/trip/item/<?= $item->id ?>/edit" class="btn btn-sm btn-primary">
-                            <i class="bi bi-pencil"></i> Edit Details
-                        </a>
+                        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editTripItemModal">
+                            <i class="bi bi-pencil-square"></i> Edit Trip
+                        </button>
                     </div>
                 </div>
             </div>
@@ -135,3 +138,13 @@
 </div>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
+<?php require __DIR__ . '/../trip/edit-trip-item-modal.php'; ?>
+<?php if (isset($_SESSION['error_edit_item'])): ?>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        var myModal = new bootstrap.Modal(document.getElementById('editTripItemModal'));
+        myModal.show();
+    });
+</script>
+<?php unset($_SESSION['error_edit_item']); ?>
+<?php endif; ?>

@@ -9,4 +9,6 @@ class Trip {
     public string $start_date;
     public string $end_date;
     public int $added_by;
+    public ?string $owner_name = null;
+    public ?string $owner_email = null;
 }

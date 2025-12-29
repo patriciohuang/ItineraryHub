@@ -21,11 +21,13 @@ class TripRepository extends Repository implements ITripRepository
 
     public function getTripById(int $userId, int $tripId): Trip
     {
-        $sql = 'SELECT id, title, description, start_date, end_date, added_by FROM trips WHERE id = :trip_id AND added_by = :user_id';
+        $sql = 'SELECT t.*, u.username as owner_name, u.email as owner_email 
+            FROM trips t
+            LEFT JOIN users u ON t.added_by = u.id
+            WHERE t.id = :id';
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([
-            ':trip_id' => $tripId,
-            ':user_id' => $userId
+            ':id' => $tripId
         ]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, Trip::class);
         $trip = $statement->fetch();
@@ -111,6 +113,24 @@ class TripRepository extends Repository implements ITripRepository
         $statement->setFetchMode(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
         $tripItem = $statement->fetch();
         return $tripItem ? : null;
+    }
+
+    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
+    {
+        $sql = 'UPDATE trip_items 
+                SET category_id = :category_id, title = :title, start_date = :start_date, end_date = :end_date, url = :url, notes = :notes 
+                WHERE id = :trip_item_id';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':category_id' => $categoryId,
+            ':title' => $title,
+            ':start_date' => $startDate,
+            ':end_date' => $endDate,
+            ':url' => $url,
+            ':notes' => $notes,
+            ':trip_item_id' => $tripItemId,
+        ]);
     }
     
     public function getAllCategories(): array

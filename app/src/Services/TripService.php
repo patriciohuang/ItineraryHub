@@ -56,6 +56,11 @@ class TripService implements ITripService
         return $this->tripRepository->getTripItemById($tripItemId);
     }
 
+    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
+    {
+        $this->tripRepository->updateTripItem($tripItemId, $categoryId, $title, $startDate, $endDate, $url, $notes);
+    }
+
     public function getAllCategories(): array
     {
         return $this->tripRepository->getAllCategories();
