@@ -88,7 +88,7 @@ class TripController
         try {
             $userId = $_SESSION['user_id'];
             $trip = $this->tripService->getTripById($userId, $id);
-            $items = $this->tripService->getTripItems($userId, $id);
+            $items = $this->tripService->getTripItems($id);
             $categories = $this->tripService->getAllCategories();
 
             $currentUserId = $_SESSION['user_id'] ?? 0;
@@ -128,6 +128,24 @@ class TripController
             exit;
         } catch (\Exception $e) {
             $_SESSION['error'] = "Error updating trip: " . $e->getMessage();
+            header("Location: /trip/$tripId");
+            exit;
+        }
+    }
+
+    public function deleteTrip(array $params)
+    {
+        $tripId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+
+        try {
+            $this->tripService->deleteTrip($userId, $tripId);
+
+            $_SESSION['success'] = "Trip deleted successfully!";
+            header("Location: /");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error deleting trip: " . $e->getMessage();
             header("Location: /trip/$tripId");
             exit;
         }
@@ -260,6 +278,26 @@ class TripController
         } catch (\Exception $e) {
             $_SESSION['error'] = "Error updating item: " . $e->getMessage();
             header("Location: /trip/item/$itemId");
+            exit;
+        }
+    }
+
+    public function deleteTripItem(array $params)
+    {
+        $itemId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+        $item = $this->tripService->getTripItemById($itemId);
+        $tripId = $item->trip_id;
+
+        try {
+            $this->tripService->deleteTripItem($userId, $itemId);
+
+            $_SESSION['success'] = "Item deleted successfully!";
+            header("Location: /trip/$tripId");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error deleting item: " . $e->getMessage();
+            header("Location: /trip/$tripId");
             exit;
         }
     }

@@ -39,16 +39,23 @@ class TripService implements ITripService
         $this->tripRepository->updateTrip($tripId, $title, $description, $startDate, $endDate);
     }
 
+    public function deleteTrip(int $userId, int $tripId): void
+    {
+        if (!$this->tripRepository->getTripById($userId, $tripId)) {
+            throw new \Exception("Trip not found or you do not have permission to delete this trip.");
+        }
+        $this->tripRepository->deleteTrip($userId, $tripId);
+    }
+
     //Trip item methods
     public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int
     {
         return $this->tripRepository->createTripItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
     }
 
-    public function getTripItems(int $userId, int $tripId): array
+    public function getTripItems(int $tripId): array
     {
-        $this->getTripById($userId, $tripId);
-        return $this->tripRepository->getTripItems($userId, $tripId);
+        return $this->tripRepository->getTripItems($tripId);
     }
 
     public function getTripItemById(int $tripItemId): TripItem
@@ -59,6 +66,11 @@ class TripService implements ITripService
     public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
     {
         $this->tripRepository->updateTripItem($tripItemId, $categoryId, $title, $startDate, $endDate, $url, $notes);
+    }
+
+    public function deleteTripItem(int $userId, int $tripItemId): void
+    {
+        $this->tripRepository->deleteTripItem($userId, $tripItemId);
     }
 
     public function getAllCategories(): array

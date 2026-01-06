@@ -59,19 +59,28 @@ class TripRepository extends Repository implements ITripRepository
             ':added_by' => $userId
         ]);
     }
+
+    public function deleteTrip(int $userId, int $tripId): void
+    {
+        $sql = 'DELETE FROM trips WHERE id = :trip_id AND added_by = :user_id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':trip_id' => $tripId,
+            ':user_id' => $userId
+        ]);
+    }
     //Trip item methods
-    public function getTripItems(int $userId, int $tripId): array
+    public function getTripItems(int $tripId): array
     {
         $sql = 'SELECT ti.id, ti.trip_id, ti.category_id, ti.title, ti.start_date, ti.end_date, ti.url, ti.notes, ti.created_by, c.name AS category_name
                 FROM trip_items ti
                 JOIN trips t ON ti.trip_id = t.id
                 JOIN categories c ON ti.category_id = c.id
-                WHERE ti.trip_id = :trip_id AND t.added_by = :user_id';
+                WHERE ti.trip_id = :trip_id';
         
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([
             ':trip_id' => $tripId,
-            ':user_id' => $userId
         ]);
         
         return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
@@ -130,6 +139,19 @@ class TripRepository extends Repository implements ITripRepository
             ':url' => $url,
             ':notes' => $notes,
             ':trip_item_id' => $tripItemId,
+        ]);
+    }
+
+    public function deleteTripItem(int $userId, int $tripItemId): void
+    {
+        $sql = 'DELETE ti FROM trip_items ti
+                JOIN trips t ON ti.trip_id = t.id
+                WHERE ti.id = :trip_item_id AND t.added_by = :user_id';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':trip_item_id' => $tripItemId,
+            ':user_id' => $userId
         ]);
     }
     

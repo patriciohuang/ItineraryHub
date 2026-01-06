@@ -119,4 +119,3 @@ function copyTripLink() {
     </script>
     <?php unset($_SESSION['error_add_item']); ?>
 <?php endif; ?>
-

@@ -9,7 +9,7 @@
                     <?php require __DIR__ . '/../partials/messages.php'; ?>
                     <form action="/register" method="POST">
                         <div class="mb-3">
-                            <label>Username</label>
+                            <label>Username <span class="text-danger">*</span></label>
                             <input type="text" name="username" class="form-control">
                         </div>
                         <div class="d-flex gap-2">
@@ -23,11 +23,11 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Email</label>
+                            <label>Email <span class="text-danger">*</span></label>
                             <input type="email" name="email" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label>Password</label>
+                            <label>Password <span class="text-danger">*</span></label>
                             <input type="password" name="password" class="form-control">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Register</button>

@@ -18,6 +18,12 @@
             } elseif (str_contains($category, 'activity')) {
                 $icon = 'bi-ticket-perforated'; 
                 $badgeClass = 'bg-success';
+            } elseif (str_contains($category, 'car rental')) {
+                $icon = 'bi-car-front-fill'; 
+                $badgeClass = 'bg-info';
+            } elseif (str_contains($category, 'train')) {
+                $icon = 'bi-train-front'; 
+                $badgeClass = 'bg-dark';
             }
         ?>
         <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
@@ -46,11 +52,27 @@
                 </div>
                 
                 <div class="text-end z-2 position-relative align-items-center d-flex gap-2">
-                    <a href="/trip/item/<?= $item->id ?>/edit" class="btn btn-sm btn-outline-secondary border-0 hover-primary">
-                        <i class="bi bi-pencil"></i>
-                    </a>
+                    <button type="button" 
+                            class="btn btn-outline-danger btn-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteTripModal"
+                            data-bs-id="<?= $item->id ?>">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
             </div>
         </div>      
     <?php endforeach; ?>
 </div>
+
+<?php require __DIR__ . '/../partials/delete-modal.php'; ?>
+<script>
+    const deleteModal = document.getElementById('deleteTripModal');
+    deleteModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const tripItemId = button.getAttribute('data-bs-id');
+        
+        const form = deleteModal.querySelector('#deleteForm');
+        form.action = `/trip/item/delete/${tripItemId}`;
+    });
+</script>

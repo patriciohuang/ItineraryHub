@@ -6,10 +6,18 @@
         <?php require __DIR__ . '/../partials/messages.php'; ?>
     <?php endif; ?>
 
-    <div class="mb-3">
+    <div class="mb-3 d-flex justify-content-between align-items-center">
         <a href="/trip/<?= $item->trip_id ?>" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Itinerary
         </a>
+        <button type="button" 
+                class="btn btn-outline-danger btn-sm" 
+                data-bs-toggle="modal" 
+                data-bs-target="#deleteTripModal"
+                data-bs-id="<?= $item->id ?>">
+            <i class="bi bi-trash"></i>
+            DELETE ITEM
+        </button>
     </div>
 
     <div class="row">
@@ -121,7 +129,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="imagePreviewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header border-0 pb-0">
@@ -139,6 +147,7 @@
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
 <?php require __DIR__ . '/../trip/edit-trip-item-modal.php'; ?>
+<?php require __DIR__ . '/../partials/delete-modal.php'; ?>
 <?php if (isset($_SESSION['error_edit_item'])): ?>
 <script>
     window.addEventListener('DOMContentLoaded', () => {
@@ -148,3 +157,14 @@
 </script>
 <?php unset($_SESSION['error_edit_item']); ?>
 <?php endif; ?>
+
+<script>
+    const deleteModal = document.getElementById('deleteTripModal');
+    deleteModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const tripItemId = button.getAttribute('data-bs-id');
+        
+        const form = deleteModal.querySelector('#deleteForm');
+        form.action = `/trip/item/delete/${tripItemId}`;
+    });
+</script>

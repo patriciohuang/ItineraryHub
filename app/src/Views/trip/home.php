@@ -29,9 +29,19 @@
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 shadow-sm d-flex">
                         <div class="card-body">
-                            <h2 class="card-title text-primary mb-3 fs-3">
-                                <?= htmlspecialchars($trip->title) ?>
-                            </h2>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h2 class="card-title text-primary fs-3 m-0">
+                                    <?= htmlspecialchars($trip->title) ?>
+                                </h2>
+                                
+                                <button type="button" 
+                                        class="btn btn-outline-danger btn-sm" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteTripModal"
+                                        data-bs-id="<?= $trip->id ?>">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                             
                             <p class="card-subtitle mb-2 text-muted">
                                 <i class="bi bi-calendar3"></i> 
@@ -55,3 +65,14 @@
 </div>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
+<?php require __DIR__ . '/../partials/delete-modal.php'; ?>
+<script>
+    const deleteModal = document.getElementById('deleteTripModal');
+    deleteModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const tripId = button.getAttribute('data-bs-id');
+        
+        const form = deleteModal.querySelector('#deleteForm');
+        form.action = `/trip/delete/${tripId}`;
+    });
+</script>

@@ -11,22 +11,22 @@
                     <form action="/trip/add" method="POST">
                         
                         <div class="mb-3">
-                            <label for="title" class="form-label">Trip Title</label>
+                            <label for="title" class="form-label">Trip Title <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="title" name="title" placeholder="e.g. Summer in Tokyo">
                         </div>
 
                         <div>
-                            <label for="description">Description</label>
+                            <label for="description">Description <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="description" name="description" placeholder="e.g. A wonderful summer trip to Tokyo" rows="3"></textarea>
                         </div>
 
                         <div class="mb-3 d-flex gap-3">
                             <div>
-                                <label for="start_date">Start Date</label>
+                                <label for="start_date">Start Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="start_date" name="start_date">
                             </div>
                             <div>
-                                <label for="end_date">End Date</label>
+                                <label for="end_date">End Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="end_date" name="end_date">
                             </div>
                         </div>
