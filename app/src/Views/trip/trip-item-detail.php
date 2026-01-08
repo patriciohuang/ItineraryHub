@@ -10,6 +10,7 @@
         <a href="/trip/<?= $item->trip_id ?>" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Itinerary
         </a>
+        <? if ($isOwner): ?>
         <button type="button" 
                 class="btn btn-outline-danger btn-sm" 
                 data-bs-toggle="modal" 
@@ -18,6 +19,7 @@
             <i class="bi bi-trash"></i>
             DELETE ITEM
         </button>
+        <?php endif; ?>
     </div>
 
     <div class="row">
@@ -64,11 +66,13 @@
                     </div>
                     <?php endif; ?>
                     
+                    <?php if ($isOwner): ?>
                     <div class="mt-4">
                         <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editTripItemModal">
                             <i class="bi bi-pencil-square"></i> Edit Trip
                         </button>
                     </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -6,8 +6,6 @@ use App\Services\ITripService;
 use App\Repositories\ITripRepository;
 use App\Repositories\TripRepository;
 use App\Models\Trip;
-use App\Models\TripItem;
-use App\Models\Attachment;
 
 class TripService implements ITripService
 {
@@ -17,7 +15,6 @@ class TripService implements ITripService
         $this->tripRepository = new TripRepository();
     }
     
-    //Trip methods
     public function getAllTrips(int $userId): array
     {
         return $this->tripRepository->getAllTrips($userId);
@@ -47,43 +44,13 @@ class TripService implements ITripService
         $this->tripRepository->deleteTrip($userId, $tripId);
     }
 
-    //Trip item methods
-    public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int
+    public function getTripMember(int $tripId, int $userId)
     {
-        return $this->tripRepository->createTripItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+        return $this->tripRepository->getTripMember($tripId, $userId);
     }
 
-    public function getTripItems(int $tripId): array
+    public function addMemberToTrip(int $tripId, int $userId, string $role, string $status): void
     {
-        return $this->tripRepository->getTripItems($tripId);
-    }
-
-    public function getTripItemById(int $tripItemId): TripItem
-    {
-        return $this->tripRepository->getTripItemById($tripItemId);
-    }
-
-    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
-    {
-        $this->tripRepository->updateTripItem($tripItemId, $categoryId, $title, $startDate, $endDate, $url, $notes);
-    }
-
-    public function deleteTripItem(int $userId, int $tripItemId): void
-    {
-        $this->tripRepository->deleteTripItem($userId, $tripItemId);
-    }
-
-    public function getAllCategories(): array
-    {
-        return $this->tripRepository->getAllCategories();
-    }
-
-    public function addAttachment(int $tripItemId, string $filePath, string $type): void
-    {
-        $this->tripRepository->addAttachment($tripItemId, $filePath, $type);
-    }
-    public function getAttachmentsByTripItemId(int $tripItemId): ?Attachment
-    {
-        return $this->tripRepository->getAttachmentsByTripItemId($tripItemId);
+        $this->tripRepository->addMemberToTrip($tripId, $userId, $role, $status);
     }
 }

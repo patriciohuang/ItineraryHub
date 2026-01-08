@@ -7,9 +7,9 @@
         <a href="/" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left"></i> Back to Dashboard
         </a>
-        
-        <button id="shareBtn" class="btn btn-outline-primary transition-all" onclick="copyTripLink()">
-            <i class="bi bi-share"></i> Share Trip
+
+        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#shareModal">
+            <i class="bi bi-person-plus"></i> Invite People
         </button>
     </div>
 
@@ -84,27 +84,9 @@
 
 </div>
 
-<script>
-function copyTripLink() {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-        const btn = document.getElementById('shareBtn');
-        const originalContent = '<i class="bi bi-share"></i> Share Trip';
-
-        btn.classList.remove('btn-outline-primary');
-        btn.classList.add('btn-success');
-        btn.innerHTML = '<i class="bi bi-check-lg"></i> Link Copied!';
-        
-        setTimeout(() => {
-            btn.classList.remove('btn-success');
-            btn.classList.add('btn-outline-primary');
-            btn.innerHTML = originalContent;
-        }, 2000);
-    });
-}
-</script>
-
 <?php require __DIR__ . '/../partials/footer.php'; ?>
 <?php require __DIR__ . '/../trip/add-trip-item-modal.php'; ?>
+<?php require __DIR__ . '/../trip/share-modal.php'; ?>
 
 <?php if ($isOwner): ?>
     <?php require __DIR__ . '/../trip/edit-trip-modal.php'; ?>

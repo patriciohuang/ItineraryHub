@@ -4,12 +4,15 @@ namespace App\Controllers;
 
 use App\Services\ITripService;
 use App\Services\TripService;
+use App\Services\ITripItemService;
+use App\Services\TripItemService;
 use App\ViewModels\TripsViewModel;
 
 
 class TripController
 {
     private ITripService $tripService;
+    private ITripItemService $TripItemService;
 
     public function __construct()
     {
@@ -23,6 +26,7 @@ class TripController
         }
 
         $this->tripService = new TripService();
+        $this->TripItemService = new TripItemService();
     }
 
     public function home()
@@ -88,8 +92,8 @@ class TripController
         try {
             $userId = $_SESSION['user_id'];
             $trip = $this->tripService->getTripById($userId, $id);
-            $items = $this->tripService->getTripItems($id);
-            $categories = $this->tripService->getAllCategories();
+            $items = $this->TripItemService->getTripItems($id);
+            $categories = $this->TripItemService->getAllCategories();
 
             $currentUserId = $_SESSION['user_id'] ?? 0;
             $isOwner = ($trip->added_by === $currentUserId);
@@ -151,153 +155,59 @@ class TripController
         }
     }
 
-    public function addTripItem(array $params)
+    private function generateInviteUrl(int $tripId, string $role): string 
     {
-        $tripId = (int) $params['id'];
-        $userId = $_SESSION['user_id'];
+        $baseUrl = "http://" . $_SERVER['HTTP_HOST'];
+        $data = "trip_id={$tripId}&role={$role}";
+        
+        $signature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
+        
+        return "{$baseUrl}/trip/join?{$data}&sig={$signature}";
+    }
 
-        $title = $_POST['title'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
-        $url = $_POST['url'] ?? '';
-        $notes = $_POST['notes'] ?? '';
-        $categoryId = $_POST['category_id'] ?? null;
+    public function joinTrip() 
+    {
+        $tripId = $_GET['trip_id'] ?? null;
+        $role = $_GET['role'] ?? null;
+        $signature = $_GET['sig'] ?? null;
+        $userId = $_SESSION['user_id'] ?? null;
 
-        if (empty($title) || empty($startDate)) {
-            $_SESSION['error'] = "Title and Start Date are required.";
-            $_SESSION['error_add_item'] = true;
-            $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/$tripId");
+        if (!$userId) {
+            $_SESSION['error'] = "Please login to join this trip.";
+            $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+            header("Location: /login");
             exit;
         }
-        if (strtotime($startDate) > strtotime($endDate)) {
-            $_SESSION['error'] = "Please ensure the dates are correct.";
-            $_SESSION['error_add_item'] = true;
-            $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/$tripId");
-            exit;
+
+        $data = "trip_id={$tripId}&role={$role}";
+        $expectedSignature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
+
+        if (!hash_equals($expectedSignature, $signature)) {
+            die("Invalid invitation link.");
         }
-        if (!is_numeric($categoryId) || (int)$categoryId <= 0) {
-            $_SESSION['error'] = "Category is required.";
-            $_SESSION['error_add_item'] = true;
-            $_SESSION['form_input'] = $_POST;
+
+        $existingMember = $this->tripService->getTripMember($tripId, $userId);
+        if ($existingMember) {
+            $_SESSION['success'] = "You are already a member of this trip!";
             header("Location: /trip/$tripId");
             exit;
         }
 
         try {
-            $newItemId = $this->tripService->createTripItem($tripId, (int)$categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+            $this->tripService->addMemberToTrip(
+                $tripId, 
+                $userId, 
+                $role,
+                \App\Models\TripMembership::STATUS_ACCEPTED // Auto-accept since they clicked link
+            );
             
-            if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
-                
-                $fileTmpPath = $_FILES['attachment']['tmp_name'];
-                $fileName = $_FILES['attachment']['name'];
-                $fileType = $_FILES['attachment']['type'];
-
-                $newFileName = uniqid() . '_' . $fileName;
-                
-                $uploadDir = __DIR__ . '/../../public/uploads/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
-                }
-                
-                $destPath = $uploadDir . $newFileName;
-
-                if(move_uploaded_file($fileTmpPath, $destPath)) {
-                    $webPath = '/uploads/' . $newFileName;
-                    $this->tripService->addAttachment($newItemId, $webPath, $fileType);
-                }
-            }
-            $_SESSION['success'] = "Item added successfully!";
+            $_SESSION['success'] = "You have joined the trip as a " . strtolower($role) . "!";
             header("Location: /trip/$tripId");
             exit;
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Error adding item: " . $e->getMessage();
-            header("Location: /trip/$tripId");
-            exit;
-        }
-    }
-
-    public function showTripItemDetail(array $params)
-    {
-        $itemId = (int) $params['id'];
-        $item = $this->tripService->getTripItemById($itemId);
-        $categories = $this->tripService->getAllCategories();
-        $attachment = $this->tripService->getAttachmentsByTripItemId($itemId);
-        $oldInput = $_SESSION['form_input'] ?? [];
-        unset($_SESSION['form_input']);
-        if (!$item) {
-            $_SESSION['error'] = "Item not found.";
-            header("Location: /trip/$item->trip_id");
-            exit;
-        }
-
-        require __DIR__ . '/../Views/trip/trip-item-detail.php';
-    }
-
-    public function editTripItem(array $params)
-    {
-        $itemId = (int) $params['id'];
-        $userId = $_SESSION['user_id'];
-
-        $title = $_POST['title'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
-        $url = $_POST['url'] ?? '';
-        $notes = $_POST['notes'] ?? '';
-        $categoryId = $_POST['category_id'] ?? null;
-
-        if (empty($title) || empty($startDate)) {
-            $_SESSION['error'] = "Title and Start Date are required.";
-            $_SESSION['error_edit_item'] = true;
-            $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/item/$itemId");
-            exit;
-        }
-        if (strtotime($startDate) > strtotime($endDate)) {
-            $_SESSION['error'] = "Please ensure the dates are correct.";
-            $_SESSION['error_edit_item'] = true;
-            $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/item/$itemId");
-            exit;
-        }
-        if (!is_numeric($categoryId) || (int)$categoryId <= 0) {
-            $_SESSION['error'] = "Category is required.";
-            $_SESSION['error_edit_item'] = true;
-            $_SESSION['form_input'] = $_POST;
-            header("Location: /trip/item/$itemId");
-            exit;
-        }
-
-        try {
-            $this->tripService->updateTripItem($itemId, (int)$categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
             
-            $_SESSION['success'] = "Item updated successfully!";
-            header("Location: /trip/item/$itemId");
-            exit;
         } catch (\Exception $e) {
-            $_SESSION['error'] = "Error updating item: " . $e->getMessage();
-            header("Location: /trip/item/$itemId");
-            exit;
-        }
-    }
-
-    public function deleteTripItem(array $params)
-    {
-        $itemId = (int) $params['id'];
-        $userId = $_SESSION['user_id'];
-        $item = $this->tripService->getTripItemById($itemId);
-        $tripId = $item->trip_id;
-
-        try {
-            $this->tripService->deleteTripItem($userId, $itemId);
-
-            $_SESSION['success'] = "Item deleted successfully!";
-            header("Location: /trip/$tripId");
-            exit;
-        } catch (\Exception $e) {
-            $_SESSION['error'] = "Error deleting item: " . $e->getMessage();
-            header("Location: /trip/$tripId");
+            $_SESSION['error'] = "Could not join trip.";
+            header("Location: /");
             exit;
         }
     }

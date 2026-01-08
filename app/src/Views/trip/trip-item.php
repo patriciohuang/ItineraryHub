@@ -51,6 +51,7 @@
                     </small>
                 </div>
                 
+                <?php if ($isOwner): ?>
                 <div class="text-end z-2 position-relative align-items-center d-flex gap-2">
                     <button type="button" 
                             class="btn btn-outline-danger btn-sm" 
@@ -60,6 +61,7 @@
                         <i class="bi bi-trash"></i>
                     </button>
                 </div>
+                <?php endif; ?>
             </div>
         </div>      
     <?php endforeach; ?>

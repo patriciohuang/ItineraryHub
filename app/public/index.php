@@ -7,16 +7,17 @@ use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
+    $r->addRoute('GET', '/trip/join', ['App\Controllers\TripController', 'joinTrip']);
     $r->addRoute('GET', '/trip/add', ['App\Controllers\TripController', 'showAddTrip']);
     $r->addRoute('POST', '/trip/add', ['App\Controllers\TripController', 'addTrip']);
     $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);
     $r->addRoute('POST', '/trip/{id}', ['App\Controllers\TripController', 'editTripDetail']);
     $r->addRoute('POST', '/trip/delete/{id}', ['App\Controllers\TripController', 'deleteTrip']);
 
-    $r->addRoute('POST', '/trip/{id}/item/add', ['App\Controllers\TripController', 'addTripItem']);
-    $r->addRoute('GET', '/trip/item/{id}', ['App\Controllers\TripController', 'showTripItemDetail']);
-    $r->addRoute('POST', '/trip/item/{id}', ['App\Controllers\TripController', 'editTripItem']);
-    $r->addRoute('POST', '/trip/item/delete/{id}', ['App\Controllers\TripController', 'deleteTripItem']);
+    $r->addRoute('POST', '/trip/{id}/item/add', ['App\Controllers\TripItemController', 'addTripItem']);
+    $r->addRoute('GET', '/trip/item/{id}', ['App\Controllers\TripItemController', 'showTripItemDetail']);
+    $r->addRoute('POST', '/trip/item/{id}', ['App\Controllers\TripItemController', 'editTripItem']);
+    $r->addRoute('POST', '/trip/item/delete/{id}', ['App\Controllers\TripItemController', 'deleteTripItem']);
 
     $r->addRoute('GET', '/login', ['App\Controllers\AuthController', 'showLogin']);
     $r->addRoute('POST', '/login', ['App\Controllers\AuthController', 'login']);
