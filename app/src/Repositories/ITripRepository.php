@@ -10,6 +10,8 @@ interface ITripRepository
     //Trip
     public function getPendingInvites(int $userId): array;
     public function getAllTrips(int $userId): array;
+    public function getAllSharedTrip(int $userId): array;
+    public function getAllFollowingTrip(int $userId): array;
     public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): void;
     public function getTripById(int $tripId): Trip;
     public function getTripAndUserNameById(int $userId, int $tripId): Trip;

@@ -25,6 +25,16 @@ class TripService implements ITripService
         return $this->tripRepository->getAllTrips($userId);
     }
 
+    public function getAllSharedTrip(int $userId): array
+    {
+        return $this->tripRepository->getAllSharedTrip($userId);
+    }
+
+    public function getAllFollowingTrip(int $userId): array
+    {
+        return $this->tripRepository->getAllFollowingTrip($userId);
+    }
+
     public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): void
     {
         $this->tripRepository->createTrip($userId, $title, $description, $startDate, $endDate);

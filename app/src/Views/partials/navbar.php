@@ -10,6 +10,12 @@
           <li class="nav-item">
             <a class="nav-link" href="/">My Trips</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/trip/shared">Joining</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/trip/following">Following</a>
+          </li>
           <li class="nav-item dropdown mx-2">
             <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown">
                 <i class="bi bi-bell-fill"></i>

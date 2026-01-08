@@ -33,13 +33,26 @@ class TripController
     {
         $userId = $_SESSION['user_id'];
         $trips = $this->tripService->getAllTrips($userId);
-        foreach ($trips as $trip) {
-            $isOwner = ($trip->added_by === $userId);
-        }
         $pendingInvites = $this->tripService->getPendingInvites($userId);
         $pendingCount = count($pendingInvites);
         $vm = new TripsViewModel($trips);
         require __DIR__ . '/../Views/trip/Home.php';
+    }
+
+    public function seeSharedTrips()
+    {
+        $userId = $_SESSION['user_id'];
+        $trips = $this->tripService->getAllSharedTrip($userId);
+        $vm = new TripsViewModel($trips);
+        require __DIR__ . '/../Views/trip/shared-trip.php';
+    }
+
+    public function seeFollowingTrips()
+    {
+        $userId = $_SESSION['user_id'];
+        $trips = $this->tripService->getAllFollowingTrip($userId);
+        $vm = new TripsViewModel($trips);
+        require __DIR__ . '/../Views/trip/following-trip.php';
     }
 
     public function showAddTrip()
@@ -89,6 +102,7 @@ class TripController
     public function seeTripDetail(array $params)
     {
         $id = $params['id'] ?? null;
+        $origin = $_GET['from'] ?? 'home';
         if ($id === null) {
             $_SESSION['error'] = 'Trip ID is required.';
             header('Location: /');

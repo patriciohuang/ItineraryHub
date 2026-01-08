@@ -1,11 +1,28 @@
 <?php require __DIR__ . '/../partials/header.php'; ?>
 <?php require __DIR__ . '/../partials/navbar.php'; ?>
-
+<?php
+// Determine the Back URL and Label based on the origin
+switch ($origin ?? 'home') {
+    case 'shared':
+        $backLink = '/trip/shared';
+        $backLabel = 'Back to Shared Trips';
+        break;
+    case 'collab':
+        $backLink = '/trip/following';
+        $backLabel = 'Back to Following';
+        break;
+    case 'home':
+    default:
+        $backLink = '/';
+        $backLabel = 'Back to My Plans';
+        break;
+}
+?>
 <div class="container mt-4">
     
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="/" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        <a href="<?= $backLink ?>" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> <?= $backLabel ?>
         </a>
 
         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#shareModal">

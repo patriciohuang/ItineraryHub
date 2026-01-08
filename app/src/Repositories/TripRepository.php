@@ -22,15 +22,30 @@ class TripRepository extends Repository implements ITripRepository
 
     public function getAllTrips(int $userId): array
     {
-        $sql = 'SELECT t.*, "ADMIN" as user_role FROM trips t WHERE added_by = :user_id
-            
-            UNION
-
-            SELECT t.*, tm.role as user_role FROM trips t
-            JOIN trip_memberships tm ON t.id = tm.trip_id
-            WHERE tm.user_id = :user_id 
-            AND tm.membership_status = "ACCEPTED"
+        $sql = 'SELECT * FROM trips WHERE added_by = :user_id
             ORDER BY start_date ASC';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':user_id' => $userId]);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, Trip::class);
+    }
+
+    public function getAllSharedTrip(int $userId): array
+    {
+        $sql = 'SELECT t.* FROM trips t
+            JOIN trip_memberships tm ON t.id = tm.trip_id
+            WHERE tm.user_id = :user_id AND tm.membership_status = "ACCEPTED" AND tm.role = "PARTICIPANT"
+            ORDER BY t.start_date ASC';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':user_id' => $userId]);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, Trip::class);
+    }
+
+    public function getAllFollowingTrip(int $userId): array
+    {
+        $sql = 'SELECT t.* FROM trips t
+            JOIN trip_memberships tm ON t.id = tm.trip_id
+            WHERE tm.user_id = :user_id AND tm.membership_status = "ACCEPTED" AND tm.role = "COLLABORATOR"
+            ORDER BY t.start_date ASC';
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([':user_id' => $userId]);
         return $statement->fetchAll(\PDO::FETCH_CLASS, Trip::class);
