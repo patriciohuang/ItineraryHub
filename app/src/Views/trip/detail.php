@@ -33,11 +33,11 @@
                         </div>
 
                         <?php if ($isOwner): ?>
-                            <div class="badge bg-success">You are the Owner</div>
+                            <div class="badge bg-secondary">You are the Owner</div>
                         <?php elseif ($isParticipant): ?>
                             <div class="badge bg-secondary">You are a Participant</div>
                         <?php else: ?>
-                            <div class="badge bg-info">Commenter View</div>
+                            <div class="badge bg-secondary">Commenter View</div>
                         <?php endif; ?>
                     </div>
 

@@ -33,6 +33,11 @@ class TripController
     {
         $userId = $_SESSION['user_id'];
         $trips = $this->tripService->getAllTrips($userId);
+        foreach ($trips as $trip) {
+            $isOwner = ($trip->added_by === $userId);
+        }
+        $pendingInvites = $this->tripService->getPendingInvites($userId);
+        $pendingCount = count($pendingInvites);
         $vm = new TripsViewModel($trips);
         require __DIR__ . '/../Views/trip/Home.php';
     }
@@ -171,7 +176,7 @@ class TripController
     {
         $tripId = $_GET['trip_id'] ?? null;
         $roleOffered = $_GET['role'] ?? null;
-        $signature = $_GET['sig'] ?? null;
+        $signature = $_GET['sig'] ?? '';
         $userId = $_SESSION['user_id'] ?? null;
 
         if (!$userId) {
@@ -181,13 +186,18 @@ class TripController
             exit;
         }
 
-        $data = "trip_id={$tripId}&role={$roleOffered}";
-        $expectedSignature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
+        $existingMember = $this->tripService->getTripMember($tripId, $userId);
+        $isPending = $existingMember && $existingMember['membership_status'] === \App\Models\TripMembership::STATUS_PENDING;
 
-        if (!hash_equals($expectedSignature, $signature)) {
-            $_SESSION['error'] = "Invalid or expired invitation link.";
-            header("Location: /");
-            exit;
+        if (!$isPending) {
+            $data = "trip_id={$tripId}&role={$roleOffered}";
+            $expectedSignature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
+    
+            if (!hash_equals($expectedSignature, $signature)) {
+                $_SESSION['error'] = "Invalid or expired invitation link.";
+                header("Location: /");
+                exit;
+            }
         }
 
         try {
@@ -197,7 +207,6 @@ class TripController
                 header("Location: /trip/$tripId");
                 exit;
             }
-            $existingMember = $this->tripService->getTripMember($tripId, $userId);
 
             if (!$existingMember) {
                 $this->tripService->addMemberToTrip(
@@ -208,6 +217,7 @@ class TripController
                     $trip->added_by
                 );
             } 
+
             elseif ($existingMember['role'] === $roleOffered) {
                 $_SESSION['success'] = "You are already a member.";
                 header("Location: /trip/$tripId");
@@ -215,6 +225,11 @@ class TripController
             } else {
                 $this->tripService->updateOfferedRole($tripId, $userId, \App\Models\TripMembership::STATUS_PENDING, $roleOffered);
             }
+
+            // I do this because the POST method strictly checks for a signature.
+            // Since we trust this user (they are logged in + pending), give them a fresh one.
+            $data = "trip_id={$tripId}&role={$roleOffered}";
+            $signature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
             require __DIR__ . '/../Views/trip/join-confirmation.php';
             
         } catch (\Exception $e) {
@@ -240,6 +255,11 @@ class TripController
         }
 
         if ($decision === 'reject') {
+            $this->tripService->updateMemberStatus(
+                $tripId, 
+                $userId, 
+                \App\Models\TripMembership::STATUS_REJECTED,
+            );
             $_SESSION['success'] = "Invitation declined.";
             header("Location: /");
             exit;

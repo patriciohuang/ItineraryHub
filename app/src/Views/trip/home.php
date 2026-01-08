@@ -33,7 +33,7 @@
                                 <h2 class="card-title text-primary fs-3 m-0">
                                     <?= htmlspecialchars($trip->title) ?>
                                 </h2>
-                                
+                                <?php if ($isOwner): ?>
                                 <button type="button" 
                                         class="btn btn-outline-danger btn-sm" 
                                         data-bs-toggle="modal" 
@@ -41,6 +41,7 @@
                                         data-bs-id="<?= $trip->id ?>">
                                     <i class="bi bi-trash"></i>
                                 </button>
+                                <?php endif; ?>
                             </div>
                             
                             <p class="card-subtitle mb-2 text-muted">

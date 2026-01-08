@@ -34,7 +34,7 @@
             <div class="d-flex gap-2 w-100 justify-content-between">
                 <div>
                     <h4 class="mb-1 fs-5">
-                        <?php if($isOwner): ?>
+                        <?php if($isOwner || $isParticipant): ?>
                         <a href="/trip/item/<?= $item->id ?>" class="text-decoration-none text-dark stretched-link">
                             <?= htmlspecialchars($item->title) ?>
                         </a>

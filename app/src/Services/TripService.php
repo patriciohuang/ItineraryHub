@@ -15,6 +15,11 @@ class TripService implements ITripService
         $this->tripRepository = new TripRepository();
     }
     
+    public function getPendingInvites(int $userId): array
+    {
+        return $this->tripRepository->getPendingInvites($userId);
+    }
+
     public function getAllTrips(int $userId): array
     {
         return $this->tripRepository->getAllTrips($userId);
@@ -66,5 +71,9 @@ class TripService implements ITripService
     public function updateOfferedRole(int $tripId, int $userId, string $status, string $roleOffered): void
     {
         $this->tripRepository->updateOfferedRole($tripId, $userId, $status, $roleOffered);
+    }
+    public function updateMemberStatus(int $tripId, int $userId, string $status): void
+    {
+        $this->tripRepository->updateMemberStatus($tripId, $userId, $status);
     }
 }

@@ -11,4 +11,5 @@ class Trip {
     public int $added_by;
     public ?string $owner_name = null;
     public ?string $owner_email = null;
+    public ?string $user_role = null;
 }

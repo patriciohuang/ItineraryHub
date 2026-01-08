@@ -1,6 +1,10 @@
 <?php require __DIR__ . '/../partials/header.php'; ?>
 <?php require __DIR__ . '/../partials/navbar.php'; ?>
-
+<div class="container mt-4">
+    <a href="/" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
