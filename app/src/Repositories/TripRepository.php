@@ -18,7 +18,19 @@ class TripRepository extends Repository implements ITripRepository
         return $statement->fetchAll(\PDO::FETCH_CLASS, Trip::class);
     }
 
-    public function getTripById(int $userId, int $tripId): Trip
+    public function getTripById(int $tripId): Trip
+    {
+        $sql = 'SELECT * FROM trips WHERE id = :id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':id' => $tripId
+        ]);
+        $statement->setFetchMode(\PDO::FETCH_CLASS, Trip::class);
+        $trip = $statement->fetch();
+        return $trip? : null;
+    }   
+
+    public function getTripAndUserNameById(int $userId, int $tripId): Trip
     {
         $sql = 'SELECT t.*, u.username as owner_name, u.email as owner_email 
             FROM trips t
@@ -80,15 +92,40 @@ class TripRepository extends Repository implements ITripRepository
         return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function addMemberToTrip(int $tripId, int $userId, string $role, string $status): void
+    public function addMemberToTrip(int $tripId, int $userId, string $roleOffered, string $status, int $tripOwner): void
     {
-        $sql = 'INSERT INTO trip_memberships (trip_id, user_id, role_offered, membership_status) VALUES (:trip_id, :user_id, :role, :status)';
+        $sql = 'INSERT INTO trip_memberships (trip_id, user_id,  membership_status, role_offered, invited_by) VALUES (:trip_id, :user_id, :membership_status, :role_offered, :trip_owner)';
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([
             ':trip_id' => $tripId,
             ':user_id' => $userId,
+            ':membership_status' => $status,
+            ':role_offered' => $roleOffered,
+            ':trip_owner' => $tripOwner
+        ]);
+    }
+
+    public function updateMemberRole(int $tripId, int $userId, string $status, string $role): void
+    {
+        $sql = 'UPDATE trip_memberships SET role = :role, membership_status = :membership_status WHERE trip_id = :trip_id AND user_id = :user_id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
             ':role' => $role,
-            ':status' => $status
+            ':membership_status' => $status,
+            ':trip_id' => $tripId,
+            ':user_id' => $userId
+        ]);
+    }
+
+    public function updateOfferedRole(int $tripId, int $userId, string $status, string $roleOffered): void
+    {
+        $sql = 'UPDATE trip_memberships SET role_offered = :role_offered, membership_status = :membership_status WHERE trip_id = :trip_id AND user_id = :user_id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':role_offered' => $roleOffered,
+            ':membership_status' => $status,
+            ':trip_id' => $tripId,
+            ':user_id' => $userId
         ]);
     }
 }

@@ -34,9 +34,13 @@
             <div class="d-flex gap-2 w-100 justify-content-between">
                 <div>
                     <h4 class="mb-1 fs-5">
+                        <?php if($isOwner): ?>
                         <a href="/trip/item/<?= $item->id ?>" class="text-decoration-none text-dark stretched-link">
                             <?= htmlspecialchars($item->title) ?>
                         </a>
+                        <?php else: ?>
+                            <?= htmlspecialchars($item->title) ?>
+                        <?php endif; ?>
                         <span class="badge rounded-pill <?= $badgeClass ?> ms-2" style="font-size: 0.7em;">
                             <?= htmlspecialchars($item->category_name) ?>
                         </span>

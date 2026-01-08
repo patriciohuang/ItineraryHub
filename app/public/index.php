@@ -7,7 +7,8 @@ use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
-    $r->addRoute('GET', '/trip/join', ['App\Controllers\TripController', 'joinTrip']);
+    $r->addRoute('GET', '/trip/join', ['App\Controllers\TripController', 'showJoinConfirmation']);
+    $r->addRoute('POST', '/trip/join/confirm', ['App\Controllers\TripController', 'processJoinDecision']);
     $r->addRoute('GET', '/trip/add', ['App\Controllers\TripController', 'showAddTrip']);
     $r->addRoute('POST', '/trip/add', ['App\Controllers\TripController', 'addTrip']);
     $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);

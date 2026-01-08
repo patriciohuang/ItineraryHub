@@ -25,10 +25,14 @@ class TripService implements ITripService
         $this->tripRepository->createTrip($userId, $title, $description, $startDate, $endDate);
     }
 
-    public function getTripById(int $userId, int $tripId): Trip
+    public function getTripById(int $tripId): Trip
     {
-        $trip = $this->tripRepository->getTripById($userId, $tripId);
-        return $trip;
+        return $this->tripRepository->getTripById($tripId);
+    }
+
+    public function getTripAndUserNameById(int $userId, int $tripId): Trip
+    {
+        return $this->tripRepository->getTripAndUserNameById($userId, $tripId);
     }
 
     public function updateTrip(int $tripId, string $title, string $description, string $startDate, string $endDate): void
@@ -38,7 +42,7 @@ class TripService implements ITripService
 
     public function deleteTrip(int $userId, int $tripId): void
     {
-        if (!$this->tripRepository->getTripById($userId, $tripId)) {
+        if (!$this->tripRepository->getTripAndUserNameById($userId, $tripId)) {
             throw new \Exception("Trip not found or you do not have permission to delete this trip.");
         }
         $this->tripRepository->deleteTrip($userId, $tripId);
@@ -49,8 +53,18 @@ class TripService implements ITripService
         return $this->tripRepository->getTripMember($tripId, $userId);
     }
 
-    public function addMemberToTrip(int $tripId, int $userId, string $role, string $status): void
+    public function addMemberToTrip(int $tripId, int $userId, string $roleOffered, string $status, int $tripOwner): void
     {
-        $this->tripRepository->addMemberToTrip($tripId, $userId, $role, $status);
+        $this->tripRepository->addMemberToTrip($tripId, $userId, $roleOffered, $status, $tripOwner);
+    }
+
+    public function updateMemberRole(int $tripId, int $userId, string $status, string $role): void
+    {
+        $this->tripRepository->updateMemberRole($tripId, $userId, $status, $role);
+    }
+
+    public function updateOfferedRole(int $tripId, int $userId, string $status, string $roleOffered): void
+    {
+        $this->tripRepository->updateOfferedRole($tripId, $userId, $status, $roleOffered);
     }
 }

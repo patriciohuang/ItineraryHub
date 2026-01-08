@@ -9,6 +9,12 @@
         <li class="nav-item">
           <a class="nav-link" href="/">My Trips</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/">Notification</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/"></a>
+        </li>
         <?php if (isset($_SESSION['user_id'])): ?>
           <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>

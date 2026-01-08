@@ -9,7 +9,7 @@
         </a>
 
         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#shareModal">
-            <i class="bi bi-person-plus"></i> Invite People
+            <i class="bi bi-share-fill"></i> Share Trip
         </button>
     </div>
 
@@ -34,8 +34,10 @@
 
                         <?php if ($isOwner): ?>
                             <div class="badge bg-success">You are the Owner</div>
+                        <?php elseif ($isParticipant): ?>
+                            <div class="badge bg-secondary">You are a Participant</div>
                         <?php else: ?>
-                            <div class="badge bg-secondary">Visitor View</div>
+                            <div class="badge bg-info">Commenter View</div>
                         <?php endif; ?>
                     </div>
 

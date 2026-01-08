@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Invite People to Trip</h3>
+                <h3 class="modal-title">Share Trip</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -25,7 +25,7 @@
                     
                     <div class="tab-pane fade show active" id="participant-pane">
                         <div class="alert alert-warning py-2 small">
-                            <i class="bi bi-exclamation-triangle"></i> Participants can view details and upload photos, but <strong>cannot edit</strong> the itinerary.
+                            <i class="bi bi-exclamation-triangle"></i> Participants can <strong>view details</strong> and <strong>suggest items</strong>, but <strong>cannot edit</strong> the itinerary.
                         </div>
                         <div class="input-group">
                             <input type="text" class="form-control" id="linkParticipant" readonly
