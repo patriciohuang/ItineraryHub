@@ -107,7 +107,7 @@ class TripItemController
             exit;
         }
 
-        require __DIR__ . '/../Views/trip/trip-item-detail.php';
+        require __DIR__ . '/../Views/trip-item/trip-item-detail.php';
     }
 
     public function editTripItem(array $params)

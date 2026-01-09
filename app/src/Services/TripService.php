@@ -35,9 +35,9 @@ class TripService implements ITripService
         return $this->tripRepository->getAllFollowingTrip($userId);
     }
 
-    public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): void
+    public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): int
     {
-        $this->tripRepository->createTrip($userId, $title, $description, $startDate, $endDate);
+        return $this->tripRepository->createTrip($userId, $title, $description, $startDate, $endDate);
     }
 
     public function getTripById(int $tripId): Trip
@@ -61,6 +61,11 @@ class TripService implements ITripService
             throw new \Exception("Trip not found or you do not have permission to delete this trip.");
         }
         $this->tripRepository->deleteTrip($userId, $tripId);
+    }
+
+    public function createMembership(int $tripId, int $userId, string $status,  string $role): void
+    {
+        $this->tripRepository->createMembership($tripId, $userId, $status, $role);
     }
 
     public function getTripMember(int $tripId, int $userId)

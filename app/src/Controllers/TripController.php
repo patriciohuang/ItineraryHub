@@ -44,7 +44,7 @@ class TripController
         $userId = $_SESSION['user_id'];
         $trips = $this->tripService->getAllSharedTrip($userId);
         $vm = new TripsViewModel($trips);
-        require __DIR__ . '/../Views/trip/shared-trip.php';
+        require __DIR__ . '/../Views/trip/trip-shared.php';
     }
 
     public function seeFollowingTrips()
@@ -52,12 +52,12 @@ class TripController
         $userId = $_SESSION['user_id'];
         $trips = $this->tripService->getAllFollowingTrip($userId);
         $vm = new TripsViewModel($trips);
-        require __DIR__ . '/../Views/trip/following-trip.php';
+        require __DIR__ . '/../Views/trip/trip-following.php';
     }
 
     public function showAddTrip()
     {
-        require __DIR__ . '/../Views/trip/Add-trip.php';
+        require __DIR__ . '/../Views/trip/trip-add.php';
     }
 
     public function addTrip()
@@ -87,7 +87,8 @@ class TripController
         }
         try
         {
-            $this->tripService->createTrip($userId, $title, $description, $startDate, $endDate);
+            $tripId = $this->tripService->createTrip($userId, $title, $description, $startDate, $endDate);
+            $this->tripService->createMembership($tripId, $userId,'ACCEPTED', 'ADMIN');
 
             $_SESSION['success'] = 'Trip created successfully.';
             header('Location: /');
@@ -121,7 +122,7 @@ class TripController
 
             $oldInput = $_SESSION['form_input'] ?? [];
             unset($_SESSION['form_input']);
-            require __DIR__ . '/../Views/trip/detail.php';
+            require __DIR__ . '/../Views/trip/trip-detail.php';
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             header('Location: /');

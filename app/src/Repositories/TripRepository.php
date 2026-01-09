@@ -91,7 +91,7 @@ class TripRepository extends Repository implements ITripRepository
         ]);
     }
     
-    public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): void
+    public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): int
     {
         $sql = 'INSERT INTO trips (title, description, start_date, end_date, added_by) VALUES (:title, :description, :start_date, :end_date, :added_by)';
         $statement = $this->getConnection()->prepare($sql);
@@ -102,6 +102,7 @@ class TripRepository extends Repository implements ITripRepository
             ':end_date' => $endDate,
             ':added_by' => $userId
         ]);
+        return (int)$this->getConnection()->lastInsertId();
     }
 
     public function deleteTrip(int $userId, int $tripId): void
@@ -114,6 +115,18 @@ class TripRepository extends Repository implements ITripRepository
         ]);
     }
 
+    public function createMembership(int $tripId, int $userId, string $status,  string $role): void
+    {
+        $sql = 'INSERT INTO trip_memberships (trip_id, user_id, membership_status, role) VALUES (:trip_id, :user_id, :membership_status, :role)';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':trip_id' => $tripId,
+            ':user_id' => $userId,
+            ':membership_status' => $status,
+            ':role' => $role
+        ]);
+    }
+    
     public function getTripMember(int $tripId, int $userId)
     {
         $sql = 'SELECT * FROM trip_memberships WHERE trip_id = :trip_id AND user_id = :user_id';

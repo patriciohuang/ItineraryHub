@@ -150,7 +150,7 @@
 </div>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
-<?php require __DIR__ . '/../trip/edit-trip-item-modal.php'; ?>
+<?php require __DIR__ . '/../trip-item/trip-edit-item-modal.php'; ?>
 <?php require __DIR__ . '/../partials/delete-modal.php'; ?>
 <?php if (isset($_SESSION['error_edit_item'])): ?>
 <script>

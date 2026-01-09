@@ -25,9 +25,11 @@ switch ($origin ?? 'home') {
             <i class="bi bi-arrow-left"></i> <?= $backLabel ?>
         </a>
 
+        <?php if ($isOwner): ?>
         <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#shareModal">
             <i class="bi bi-share-fill"></i> Share Trip
         </button>
+        <?php endif; ?>
     </div>
 
     <div class="card shadow-sm mb-4 border-0 bg-light">
@@ -98,17 +100,17 @@ switch ($origin ?? 'home') {
             </p>
         </div>
     <?php else: ?>
-        <?php require __DIR__ . '/../trip/trip-item.php'; ?>
+        <?php require __DIR__ . '/../trip-item/trip-item.php'; ?>
     <?php endif; ?>
 
 </div>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
-<?php require __DIR__ . '/../trip/add-trip-item-modal.php'; ?>
+<?php require __DIR__ . '/../trip-item/trip-add-item-modal.php'; ?>
 <?php require __DIR__ . '/../trip/share-modal.php'; ?>
 
 <?php if ($isOwner): ?>
-    <?php require __DIR__ . '/../trip/edit-trip-modal.php'; ?>
+    <?php require __DIR__ . '/../trip/trip-edit-modal.php'; ?>
 <?php endif; ?>
 
 <?php if (isset($_SESSION['error_add_item'])): ?>
