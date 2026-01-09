@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Repositories;
-use App\Models\Trip;
 use App\Models\TripItem;
 use App\Models\Attachment;
 

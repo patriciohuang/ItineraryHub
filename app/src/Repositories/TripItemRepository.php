@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Framework\Repository;
 use App\Repositories\ITripItemRepository;
 use App\Models\TripItem;
+use App\Models\Category;
 use App\Models\Attachment;
 
 class TripItemRepository extends Repository implements ITripItemRepository

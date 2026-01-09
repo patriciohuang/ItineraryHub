@@ -62,33 +62,4 @@ class TripService implements ITripService
         }
         $this->tripRepository->deleteTrip($userId, $tripId);
     }
-
-    public function createMembership(int $tripId, int $userId, string $status,  string $role): void
-    {
-        $this->tripRepository->createMembership($tripId, $userId, $status, $role);
-    }
-
-    public function getTripMember(int $tripId, int $userId)
-    {
-        return $this->tripRepository->getTripMember($tripId, $userId);
-    }
-
-    public function addMemberToTrip(int $tripId, int $userId, string $roleOffered, string $status, int $tripOwner): void
-    {
-        $this->tripRepository->addMemberToTrip($tripId, $userId, $roleOffered, $status, $tripOwner);
-    }
-
-    public function updateMemberRole(int $tripId, int $userId, string $status, string $role): void
-    {
-        $this->tripRepository->updateMemberRole($tripId, $userId, $status, $role);
-    }
-
-    public function updateOfferedRole(int $tripId, int $userId, string $status, string $roleOffered): void
-    {
-        $this->tripRepository->updateOfferedRole($tripId, $userId, $status, $roleOffered);
-    }
-    public function updateMemberStatus(int $tripId, int $userId, string $status): void
-    {
-        $this->tripRepository->updateMemberStatus($tripId, $userId, $status);
-    }
 }
