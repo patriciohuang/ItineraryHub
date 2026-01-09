@@ -55,12 +55,16 @@
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1"><?= htmlspecialchars($item->title) ?></h5>
                                     <div class="text-end">
+                                        <?php if(!empty($item->start_date)): ?>
                                         <small class="text-muted">
                                             <?= date('M d, Y', strtotime($item->start_date)) ?>
                                         </small>
+                                        <?php endif; ?>
+                                        <?php if(!empty($item->end_date)): ?>
                                         <small class="text-muted">
                                             - <?= date('M d, Y', strtotime($item->end_date)) ?>
                                         </small>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <p class="mb-1">
@@ -81,11 +85,6 @@
                                             <i class="bi bi-x-lg"></i> Reject
                                         </button>
                                     </form>
-
-                                    <a href="/trip/<?= $item->trip_id ?>" 
-                                    class="btn btn-sm btn-link text-secondary text-decoration-none">
-                                        View Details
-                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

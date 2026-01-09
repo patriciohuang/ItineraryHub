@@ -30,7 +30,9 @@
                     <span class="badge bg-secondary"><?= htmlspecialchars($item->category_name) ?></span>
                 </div>
                 <div class="card-body">
+                <?php if (!empty($item->start_date) || !empty($item->end_date) || !empty($item->url) || !empty($item->notes)): ?>
                     <div class="mb-4">
+                        <?php if (!empty($item->start_date)): ?>
                         <h4 class="text-muted text-uppercase small fw-bold fs-6">Schedule</h4>
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-calendar-event fs-5 me-3 text-primary"></i>
@@ -38,6 +40,7 @@
                                 <strong>Start:</strong> <?= date('l, M d, Y', strtotime($item->start_date)) ?> at <?= date('H:i', strtotime($item->start_date)) ?>
                             </div>
                         </div>
+                        <?php endif; ?>
                         <?php if ($item->end_date): ?>
                         <div class="d-flex align-items-center">
                             <i class="bi bi-flag fs-5 me-3 text-danger"></i>
@@ -65,14 +68,22 @@
                         </div>
                     </div>
                     <?php endif; ?>
-                    
-                    <?php if ($isOwner): ?>
+                
+                <?php else: ?>
+                    <div class="card-body d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-inbox fs-1"></i>
+                            <p class="mt-2">No details available for this item.</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                <?php if ($isOwner): ?>
                     <div class="mt-4">
                         <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editTripItemModal">
                             <i class="bi bi-pencil-square"></i> Edit Trip
                         </button>
                     </div>
-                    <?php endif; ?>
+                <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -30,7 +30,7 @@ class TripService implements ITripService
         return $this->tripRepository->getAllFollowingTrip($userId);
     }
 
-    public function createTrip(int $userId, string $title, string $description, string $startDate, string $endDate): int
+    public function createTrip(int $userId, string $title, string $description, ?string $startDate, ?string $endDate): int
     {
         return $this->tripRepository->createTrip($userId, $title, $description, $startDate, $endDate);
     }
@@ -45,7 +45,7 @@ class TripService implements ITripService
         return $this->tripRepository->getTripAndUserNameById($userId, $tripId);
     }
 
-    public function updateTrip(int $tripId, string $title, string $description, string $startDate, string $endDate): void
+    public function updateTrip(int $tripId, string $title, string $description, ?string $startDate, ?string $endDate): void
     {
         $this->tripRepository->updateTrip($tripId, $title, $description, $startDate, $endDate);
     }

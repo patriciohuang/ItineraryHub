@@ -47,8 +47,11 @@
                     </h4>
                     
                     <small class="text-muted">
-                        <i class="bi bi-clock"></i> 
-                        <?= date('M d, H:i', strtotime($item->start_date)) ?>
+                        <?php if(!empty($item->start_date)): ?>
+                            <i class="bi bi-clock"></i> 
+                            From 
+                            <?= date('M d, H:i', strtotime($item->start_date)) ?>
+                        <?php endif; ?>
                         <?php if(!empty($item->end_date)): ?>
                             - <?= date('M d, H:i', strtotime($item->end_date)) ?>
                         <?php endif; ?>

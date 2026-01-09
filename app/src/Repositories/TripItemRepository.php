@@ -26,8 +26,8 @@ class TripItemRepository extends Repository implements ITripItemRepository
         
         return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
     }
-    
-    public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int
+
+    public function createTripItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): int
     {
         $sql = 'INSERT INTO trip_items 
                 (trip_id, category_id, title, start_date, end_date, url, notes, created_by, status) 
@@ -65,7 +65,7 @@ class TripItemRepository extends Repository implements ITripItemRepository
         return $tripItem ? : null;
     }
 
-    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
+    public function updateTripItem(int $tripItemId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes): void
     {
         $sql = 'UPDATE trip_items 
                 SET category_id = :category_id, title = :title, start_date = :start_date, end_date = :end_date, url = :url, notes = :notes 
@@ -96,7 +96,7 @@ class TripItemRepository extends Repository implements ITripItemRepository
         ]);
     }
 
-    public function suggestItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): void
+    public function suggestItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): void
     {
         $sql = 'INSERT INTO trip_items 
                 (trip_id, category_id, title, start_date, end_date, url, notes, created_by, status, is_suggested, suggested_by) 

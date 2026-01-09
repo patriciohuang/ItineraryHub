@@ -27,20 +27,20 @@ class TripItemController
         $userId = $_SESSION['user_id'];
 
         $title = $_POST['title'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
+        $startDate = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
+        $endDate = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         $url = $_POST['url'] ?? '';
         $notes = $_POST['notes'] ?? '';
         $categoryId = $_POST['category_id'] ?? null;
 
-        if (empty($title) || empty($startDate)) {
-            $_SESSION['error'] = "Title and Start Date are required.";
+        if (empty($title)) {
+            $_SESSION['error'] = "Title is required.";
             $_SESSION['error_add_item'] = true;
             $_SESSION['form_input'] = $_POST;
             header("Location: /trip/$tripId");
             exit;
         }
-        if (strtotime($startDate) > strtotime($endDate)) {
+        if ($startDate && $endDate && strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = "Please ensure the dates are correct.";
             $_SESSION['error_add_item'] = true;
             $_SESSION['form_input'] = $_POST;
@@ -116,20 +116,20 @@ class TripItemController
         $userId = $_SESSION['user_id'];
 
         $title = $_POST['title'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
+        $startDate = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
+        $endDate = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         $url = $_POST['url'] ?? '';
         $notes = $_POST['notes'] ?? '';
         $categoryId = $_POST['category_id'] ?? null;
 
-        if (empty($title) || empty($startDate)) {
-            $_SESSION['error'] = "Title and Start Date are required.";
+        if (empty($title)) {
+            $_SESSION['error'] = "Title is required.";
             $_SESSION['error_edit_item'] = true;
             $_SESSION['form_input'] = $_POST;
             header("Location: /trip/item/$itemId");
             exit;
         }
-        if (strtotime($startDate) > strtotime($endDate)) {
+        if ($startDate && $endDate && strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = "Please ensure the dates are correct.";
             $_SESSION['error_edit_item'] = true;
             $_SESSION['form_input'] = $_POST;
@@ -183,20 +183,20 @@ class TripItemController
         $userId = $_SESSION['user_id'];
 
         $title = $_POST['title'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
+        $startDate = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
+        $endDate = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         $url = $_POST['url'] ?? '';
         $notes = $_POST['notes'] ?? '';
         $categoryId = $_POST['category_id'] ?? null;
 
-        if (empty($title) || empty($startDate)) {
-            $_SESSION['error'] = "Title and Start Date are required.";
+        if (empty($title)) {
+            $_SESSION['error'] = "Title is required.";
             $_SESSION['error_add_item'] = true;
             $_SESSION['form_input'] = $_POST;
             header("Location: /trip/$tripId");
             exit;
         }
-        if (strtotime($startDate) > strtotime($endDate)) {
+        if ($startDate && $endDate && strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = "Please ensure the dates are correct.";
             $_SESSION['error_add_item'] = true;
             $_SESSION['form_input'] = $_POST;

@@ -6,8 +6,8 @@ class Trip {
     public int $id;
     public string $title;
     public ?string $description = null;
-    public string $start_date;
-    public string $end_date;
+    public ?string $start_date;
+    public ?string $end_date;
     public int $added_by;
     public ?string $owner_name = null;
     public ?string $owner_email = null;

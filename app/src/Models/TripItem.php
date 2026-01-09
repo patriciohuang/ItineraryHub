@@ -11,7 +11,7 @@ class TripItem {
     public int $id;
     public int $trip_id;
     public string $title;
-    public string $start_date;
+    public ?string $start_date;
     public ?string $end_date;
     public ?string $url;
     public ?string $notes = null;

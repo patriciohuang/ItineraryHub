@@ -16,7 +16,7 @@
                         </div>
 
                         <div>
-                            <label for="description">Description <span class="text-danger">*</span></label>
+                            <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" placeholder="e.g. A wonderful summer trip to Tokyo" rows="3"></textarea>
                         </div>
 

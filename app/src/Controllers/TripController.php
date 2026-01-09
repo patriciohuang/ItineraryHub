@@ -20,6 +20,7 @@ class TripController extends BaseController
 
     public function showAddTrip()
     {
+        $userId = $_SESSION['user_id'];
         list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
         require __DIR__ . '/../Views/trip/trip-add.php';
     }
@@ -44,7 +45,7 @@ class TripController extends BaseController
             exit;
         }
 
-        if (strtotime($startDate) > strtotime($endDate)) {
+        if ($startDate && $endDate && strtotime($startDate) > strtotime($endDate)) {
             $_SESSION['error'] = 'Start date cannot be later than end date.';
             header('Location: /trip/add');
             exit;
@@ -103,11 +104,11 @@ class TripController extends BaseController
 
         $title = $_POST['title'];
         $description = $_POST['description'];
-        $startDate = $_POST['start_date'];
-        $endDate = $_POST['end_date'];
+        $startDate = $_POST['start_date'] ?? '';
+        $endDate = $_POST['end_date'] ?? '';
 
         if (empty($title) || empty($startDate) || empty($endDate)) {
-            $_SESSION['error'] = "Title and Dates are required.";
+            $_SESSION['error'] = "Title, start date, and end date are required.";
             header("Location: /trip/$tripId");
             exit;
         }

@@ -8,11 +8,11 @@ interface ITripItemRepository
 {
    //Trip item
     public function getTripItems(int $tripId): array;
-    public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int;
+    public function createTripItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): int;
     public function getTripItemById(int $tripItemId): TripItem;
-    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void;
+    public function updateTripItem(int $tripItemId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes): void;
     public function deleteTripItem(int $userId, int $tripItemId): void;
-    public function suggestItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): void;
+    public function suggestItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): void;
     public function approveSuggestedItem(int $itemId, int $userId): void;
     public function rejectSuggestedItem(int $itemId, int $userId): void;
     public function getPendingSuggestions(int $userId): array;

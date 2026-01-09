@@ -15,7 +15,7 @@ class TripItemService implements ITripItemService
     {
         $this->tripItemRepository = new TripItemRepository();
     }
-    public function createTripItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): int
+    public function createTripItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): int
     {
         return $this->tripItemRepository->createTripItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
     }
@@ -30,7 +30,7 @@ class TripItemService implements ITripItemService
         return $this->tripItemRepository->getTripItemById($tripItemId);
     }
 
-    public function updateTripItem(int $tripItemId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes): void
+    public function updateTripItem(int $tripItemId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes): void
     {
         $this->tripItemRepository->updateTripItem($tripItemId, $categoryId, $title, $startDate, $endDate, $url, $notes);
     }
@@ -40,7 +40,7 @@ class TripItemService implements ITripItemService
         $this->tripItemRepository->deleteTripItem($userId, $tripItemId);
     }
 
-    public function suggestItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): void
+    public function suggestItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): void
     {
         $this->tripItemRepository->suggestItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
     }

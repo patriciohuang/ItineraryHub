@@ -23,11 +23,11 @@
 
 <div class="row">
     <div class="col-md-6 mb-3">
-        <label for="start_date" class="form-label">Start Time <span class="text-danger">*</span></label>
+        <label for="start_date" class="form-label">Start Time</label>
         <input type="datetime-local" name="start_date" id="start_date" class="form-control" value="<?= htmlspecialchars($oldInput['start_date'] ?? '') ?>">
     </div>
     <div class="col-md-6 mb-3">
-        <label for="end_date" class="form-label">End Time <span class="text-danger">*</span></label>
+        <label for="end_date" class="form-label">End Time</label>
         <input type="datetime-local" name="end_date" id="end_date" class="form-control" value="<?= htmlspecialchars($oldInput['end_date'] ?? '') ?>">
     </div>
 </div>
