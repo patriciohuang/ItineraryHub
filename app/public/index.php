@@ -6,17 +6,24 @@ use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
 $dispatcher = simpleDispatcher(function (RouteCollector $r) {
-    $r->addRoute('GET', '/', ['App\Controllers\TripController', 'home']);
-    $r->addRoute('GET', '/trip/join', ['App\Controllers\TripController', 'showJoinConfirmation']);
-    $r->addRoute('POST', '/trip/join/confirm', ['App\Controllers\TripController', 'processJoinDecision']);
-    $r->addRoute('GET', '/trip/shared', ['App\Controllers\TripController', 'seeSharedTrips']);
-    $r->addRoute('GET', '/trip/following', ['App\Controllers\TripController', 'seeFollowingTrips']);
+    $r->addRoute('GET', '/', ['App\Controllers\HomeController', 'home']);
+    $r->addRoute('GET', '/trip/shared', ['App\Controllers\HomeController', 'seeSharedTrips']);
+    $r->addRoute('GET', '/trip/following', ['App\Controllers\HomeController', 'seeFollowingTrips']);
+    $r->addRoute('GET', '/notifications', ['App\Controllers\HomeController', 'notifications']);
+
+    $r->addRoute('GET', '/trip/join', ['App\Controllers\MembershipController', 'showJoinConfirmation']);
+    $r->addRoute('POST', '/trip/join/confirm', ['App\Controllers\MembershipController', 'processJoinDecision']);
+    $r->addRoute('GET', '/api/trip/generate-invite', ['App\Controllers\MembershipController', 'getInviteLinkAPI']);
+    
     $r->addRoute('GET', '/trip/add', ['App\Controllers\TripController', 'showAddTrip']);
     $r->addRoute('POST', '/trip/add', ['App\Controllers\TripController', 'addTrip']);
     $r->addRoute('GET', '/trip/{id}', ['App\Controllers\TripController', 'seeTripDetail']);
     $r->addRoute('POST', '/trip/{id}', ['App\Controllers\TripController', 'editTripDetail']);
     $r->addRoute('POST', '/trip/delete/{id}', ['App\Controllers\TripController', 'deleteTrip']);
-
+    
+    $r->addRoute('POST', '/trip/{id}/item/review', ['App\Controllers\TripItemController', 'reviewItem']);
+    $r->addRoute('POST', '/trip/{id}/item/suggest', ['App\Controllers\TripItemController', 'suggestItem']);
+    $r->addRoute('POST', '/trip/item/{id:\d+}/process', ['App\Controllers\TripItemController', 'processSuggestedItem']);
     $r->addRoute('POST', '/trip/{id}/item/add', ['App\Controllers\TripItemController', 'addTripItem']);
     $r->addRoute('GET', '/trip/item/{id}', ['App\Controllers\TripItemController', 'showTripItemDetail']);
     $r->addRoute('POST', '/trip/item/{id}', ['App\Controllers\TripItemController', 'editTripItem']);

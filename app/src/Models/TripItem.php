@@ -19,4 +19,6 @@ class TripItem {
     public string $status;
     public int $created_by;
     public string $category_name;
+    public ?string $suggester_name;
+    public ?string $trip_title;
 }

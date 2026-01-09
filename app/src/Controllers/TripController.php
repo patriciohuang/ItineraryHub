@@ -4,63 +4,23 @@ namespace App\Controllers;
 
 use App\Services\ITripService;
 use App\Services\TripService;
-use App\Services\ITripItemService;
-use App\Services\TripItemService;
-use App\Services\IMembershipService;
-use App\Services\MembershipService;
 use App\ViewModels\TripsViewModel;
 
 
-class TripController
+class TripController extends BaseController
 {
     private ITripService $tripService;
-    private ITripItemService $TripItemService;
-    private IMembershipService $membershipService;
 
     public function __construct()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
-        }
+        parent::__construct();
 
         $this->tripService = new TripService();
-        $this->TripItemService = new TripItemService();
-        $this->membershipService = new MembershipService();
-    }
-
-    public function home()
-    {
-        $userId = $_SESSION['user_id'];
-        $trips = $this->tripService->getAllTrips($userId);
-        $pendingInvites = $this->tripService->getPendingInvites($userId);
-        $pendingCount = count($pendingInvites);
-        $vm = new TripsViewModel($trips);
-        require __DIR__ . '/../Views/trip/Home.php';
-    }
-
-    public function seeSharedTrips()
-    {
-        $userId = $_SESSION['user_id'];
-        $trips = $this->tripService->getAllSharedTrip($userId);
-        $vm = new TripsViewModel($trips);
-        require __DIR__ . '/../Views/trip/trip-shared.php';
-    }
-
-    public function seeFollowingTrips()
-    {
-        $userId = $_SESSION['user_id'];
-        $trips = $this->tripService->getAllFollowingTrip($userId);
-        $vm = new TripsViewModel($trips);
-        require __DIR__ . '/../Views/trip/trip-following.php';
     }
 
     public function showAddTrip()
     {
+        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
         require __DIR__ . '/../Views/trip/trip-add.php';
     }
 
@@ -116,13 +76,15 @@ class TripController
         try {
             $userId = $_SESSION['user_id'];
             $trip = $this->tripService->getTripAndUserNameById($userId, $id);
-            $items = $this->TripItemService->getTripItems($id);
-            $categories = $this->TripItemService->getAllCategories();
+            $items = $this->tripItemService->getTripItems($id);
+            $categories = $this->tripItemService->getAllCategories();
             $role = $this->membershipService->getTripMember($id, $userId);
 
             $currentUserId = $_SESSION['user_id'] ?? 0;
             $isOwner = ($trip->added_by === $currentUserId);
-            $isParticipant = (is_array($role) && $role['role'] === 'PARTICIPANT');;
+            $isParticipant = (is_array($role) && $role['role'] === 'PARTICIPANT');
+
+            list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
 
             $oldInput = $_SESSION['form_input'] ?? [];
             unset($_SESSION['form_input']);

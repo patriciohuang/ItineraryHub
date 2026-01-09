@@ -42,4 +42,8 @@ class MembershipService implements IMembershipService
     {
         $this->membershipRepository->updateMemberStatus($tripId, $userId, $status);
     }
+    public function getPendingInvites(int $userId): array
+    {
+        return $this->membershipRepository->getPendingInvites($userId);
+    }
 }

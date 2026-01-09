@@ -40,6 +40,26 @@ class TripItemService implements ITripItemService
         $this->tripItemRepository->deleteTripItem($userId, $tripItemId);
     }
 
+    public function suggestItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): void
+    {
+        $this->tripItemRepository->suggestItem($tripId, $categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+    }
+
+    public function approveSuggestedItem(int $itemId, int $userId): void
+    {
+        $this->tripItemRepository->approveSuggestedItem($itemId, $userId);
+    }
+
+    public function rejectSuggestedItem(int $itemId, int $userId): void
+    {
+        $this->tripItemRepository->rejectSuggestedItem($itemId, $userId);
+    }
+
+    public function getPendingSuggestions(int $userId): array
+    {
+        return $this->tripItemRepository->getPendingSuggestions($userId);
+    }
+
     public function getAllCategories(): array
     {
         return $this->tripItemRepository->getAllCategories();

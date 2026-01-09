@@ -176,4 +176,75 @@ class TripItemController
             exit;
         }
     }
+
+    public function suggestItem(array $params)
+    {
+        $tripId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+
+        $title = $_POST['title'];
+        $startDate = $_POST['start_date'];
+        $endDate = $_POST['end_date'];
+        $url = $_POST['url'] ?? '';
+        $notes = $_POST['notes'] ?? '';
+        $categoryId = $_POST['category_id'] ?? null;
+
+        if (empty($title) || empty($startDate)) {
+            $_SESSION['error'] = "Title and Start Date are required.";
+            $_SESSION['error_add_item'] = true;
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId");
+            exit;
+        }
+        if (strtotime($startDate) > strtotime($endDate)) {
+            $_SESSION['error'] = "Please ensure the dates are correct.";
+            $_SESSION['error_add_item'] = true;
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId");
+            exit;
+        }
+        if (!is_numeric($categoryId) || (int)$categoryId <= 0) {
+            $_SESSION['error'] = "Category is required.";
+            $_SESSION['error_suggest_item'] = true;
+            $_SESSION['form_input'] = $_POST;
+            header("Location: /trip/$tripId");
+            exit;
+        }
+
+        try {
+            $this->tripItemService->suggestItem($tripId, (int)$categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+            
+            $_SESSION['success'] = "Item suggestion submitted for review!";
+            header("Location: /trip/$tripId");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error suggesting item: " . $e->getMessage();
+            header("Location: /trip/$tripId");
+            exit;
+        }
+    }
+
+    public function processSuggestedItem(array $params)
+    {
+        $itemId = (int) $params['id'];
+        $action = $_POST['decision'] ?? 'reject';
+        $userId = $_SESSION['user_id'];
+        $item = $this->tripItemService->getTripItemById($itemId);
+        $tripId = $item->trip_id;
+        try {
+            if ($action === 'approve') {
+                $this->tripItemService->approveSuggestedItem($itemId, $userId);
+                $_SESSION['success'] = "Item suggestion approved!";
+            } elseif ($action === 'reject') {
+                $this->tripItemService->rejectSuggestedItem($itemId, $userId);
+                $_SESSION['success'] = "Item suggestion rejected.";
+            }
+            header("Location: /trip/$tripId");
+            exit;
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error processing suggestion: " . $e->getMessage();
+            header("Location: /trip/$tripId");
+            exit;
+        }
+    }
 }

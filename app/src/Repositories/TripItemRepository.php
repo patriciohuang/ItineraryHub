@@ -16,7 +16,8 @@ class TripItemRepository extends Repository implements ITripItemRepository
                 FROM trip_items ti
                 JOIN trips t ON ti.trip_id = t.id
                 JOIN categories c ON ti.category_id = c.id
-                WHERE ti.trip_id = :trip_id';
+                WHERE ti.trip_id = :trip_id AND (ti.status = "PUBLISHED" OR ti.status = "APPROVED")
+                ORDER BY ti.start_date ASC';
         
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([
@@ -94,7 +95,68 @@ class TripItemRepository extends Repository implements ITripItemRepository
             ':user_id' => $userId
         ]);
     }
+
+    public function suggestItem(int $tripId, int $categoryId, string $title, string $startDate, string $endDate, string $url, string $notes, int $userId): void
+    {
+        $sql = 'INSERT INTO trip_items 
+                (trip_id, category_id, title, start_date, end_date, url, notes, created_by, status, is_suggested, suggested_by) 
+                VALUES 
+                (:trip_id, :category_id, :title, :start_date, :end_date, :url, :notes, :created_by, "SUGGESTED", 1, :suggested_by)';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':trip_id' => $tripId,
+            ':category_id' => $categoryId,
+            ':title' => $title,
+            ':start_date' => $startDate,
+            ':end_date' => $endDate,
+            ':url' => $url,
+            ':notes' => $notes,
+            ':created_by' => $userId,
+            ':suggested_by' => $userId
+        ]);
+    }
+
+    public function approveSuggestedItem(int $itemId, int $userId): void
+    {
+        $sql = 'UPDATE trip_items 
+                SET status = "APPROVED"
+                WHERE id = :item_id';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':item_id' => $itemId
+        ]);
+    }
+
+    public function rejectSuggestedItem(int $itemId, int $userId): void
+    {
+        $sql = 'UPDATE trip_items 
+                SET status = "REJECTED" 
+                WHERE id = :item_id';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':item_id' => $itemId
+        ]);
+    }
     
+    public function getPendingSuggestions(int $userId): array
+    {
+        $sql = 'SELECT ti.id, ti.trip_id, ti.category_id, ti.title, ti.start_date, ti.end_date, ti.url, ti.notes, ti.created_by, c.name AS category_name, u.username AS suggester_name, t.title AS trip_title
+                FROM trip_items ti
+                JOIN categories c ON ti.category_id = c.id
+                JOIN users u ON ti.suggested_by = u.id
+                JOIN trips t ON ti.trip_id = t.id
+                WHERE ti.status = "SUGGESTED" AND t.added_by = :user_id
+                ORDER BY ti.start_date ASC';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':user_id' => $userId]);
+
+        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
+    }
+
     public function getAllCategories(): array
     {
         $sql = 'SELECT * FROM categories ORDER BY name ASC';

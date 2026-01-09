@@ -28,10 +28,9 @@
                             <i class="bi bi-exclamation-triangle"></i> Participants can <strong>view details</strong> and <strong>suggest items</strong>, but <strong>cannot edit</strong> the itinerary.
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="linkParticipant" readonly
-                                   value="<?= $this->generateInviteUrl($trip->id, 'PARTICIPANT') ?>">
-                            <button class="btn btn-outline-secondary" onclick="copyToClipboard('linkParticipant', this)">
-                                Copy
+                            <input type="text" class="form-control" id="linkParticipant" readonly placeholder="Generating link...">
+                            <button class="btn btn-outline-secondary" onclick="handleLinkAction('PARTICIPANT', this)">
+                                <i class="bi bi-link-45deg"></i> Get Link
                             </button>
                         </div>
                     </div>
@@ -41,10 +40,9 @@
                             <i class="bi bi-exclamation-triangle"></i> Collaborators can <strong>suggest items</strong>.
                         </div>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="linkCollaborator" readonly
-                                   value="<?= $this->generateInviteUrl($trip->id, 'COLLABORATOR') ?>">
-                            <button class="btn btn-outline-secondary" onclick="copyToClipboard('linkCollaborator', this)">
-                                Copy
+                            <input type="text" class="form-control" id="linkCollaborator" readonly placeholder="Generating link...">
+                            <button class="btn btn-outline-secondary" onclick="handleLinkAction('COLLABORATOR', this)">
+                                <i class="bi bi-link-45deg"></i> Get Link
                             </button>
                         </div>
                     </div>
@@ -55,22 +53,51 @@
     </div>
 </div>
 <script>
-function copyToClipboard(elementId, btn) {
-    var copyText = document.getElementById(elementId);
-    navigator.clipboard.writeText(copyText.value).then(() => {
-        const originalContent = btn.innerHTML;
+async function handleLinkAction(role, btn) {
+    const originalText = btn.innerHTML;
+    const inputField = role === 'PARTICIPANT' ? document.getElementById('linkParticipant') : document.getElementById('linkCollaborator');
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
+        inputField.placeholder = "Contacting server...";
+        const tripId = <?= $trip->id ?>;
+        const response = await fetch(`/api/trip/generate-invite?trip_id=${tripId}&role=${role}`);
+        const data = await response.json();
 
-        btn.classList.remove('btn-outline-secondary');
+        if (data.success) {
+            inputField.value = data.url;
+            
+            copyToClipboard(inputField, btn);
+            
+        } else {
+            alert("Error: " + (data.error || "Could not generate link"));
+            btn.innerHTML = originalText; 
+        }
+
+    } catch (error) {
+        console.error(error);
+        alert("Network error. Please try again.");
+        btn.innerHTML = originalText;
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+function copyToClipboard(inputElement, btn) {
+    navigator.clipboard.writeText(inputElement.value).then(() => {
+        const originalHtml = btn.innerHTML;
+        
+        btn.classList.remove('btn-primary', 'btn-outline-secondary');
         btn.classList.add('btn-success');
-        btn.classList.add('text-white');
-        btn.innerHTML = '<i class="bi bi-check-lg"></i> Link Copied!';
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
         
         setTimeout(() => {
             btn.classList.remove('btn-success');
-            btn.classList.remove('text-white');
             btn.classList.add('btn-outline-secondary');
-            btn.innerHTML = originalContent;
+            btn.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
         }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy', err);
     });
 }
 </script>

@@ -77,4 +77,14 @@ class MembershipRepository extends Repository implements IMembershipRepository
             ':user_id' => $userId
         ]);
     }
+
+    public function getPendingInvites(int $userId): array
+    {
+        $sql = 'SELECT tm.*, t.title FROM trip_memberships tm
+            JOIN trips t ON tm.trip_id = t.id
+            WHERE tm.user_id = :user_id AND tm.membership_status = "PENDING"';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':user_id' => $userId]);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }

@@ -8,16 +8,6 @@ use App\Models\Trip;
 
 class TripRepository extends Repository implements ITripRepository
 {
-    public function getPendingInvites(int $userId): array
-    {
-        $sql = 'SELECT tm.*, t.title FROM trip_memberships tm
-            JOIN trips t ON tm.trip_id = t.id
-            WHERE tm.user_id = :user_id AND tm.membership_status = "PENDING"';
-        $statement = $this->getConnection()->prepare($sql);
-        $statement->execute([':user_id' => $userId]);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
     public function getAllTrips(int $userId): array
     {
         $sql = 'SELECT * FROM trips WHERE added_by = :user_id

@@ -5,7 +5,6 @@ use App\Models\Trip;
 
 interface ITripRepository
 {
-    public function getPendingInvites(int $userId): array;
     public function getAllTrips(int $userId): array;
     public function getAllSharedTrip(int $userId): array;
     public function getAllFollowingTrip(int $userId): array;

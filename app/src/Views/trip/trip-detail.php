@@ -1,7 +1,6 @@
 <?php require __DIR__ . '/../partials/header.php'; ?>
 <?php require __DIR__ . '/../partials/navbar.php'; ?>
 <?php
-// Determine the Back URL and Label based on the origin
 switch ($origin ?? 'home') {
     case 'shared':
         $backLink = '/trip/shared';

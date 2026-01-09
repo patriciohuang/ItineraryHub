@@ -29,6 +29,47 @@ class MembershipController
         $this->membershipService = new MembershipService();
     }
 
+    public function getInviteLinkAPI()
+    {
+        header('Content-Type: application/json');
+
+        $tripId = $_GET['trip_id'] ?? null;
+        $role = $_GET['role'] ?? 'COLLABORATOR';
+        $userId = $_SESSION['user_id'] ?? null;
+
+        if (!$userId) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'User not logged in']);
+            exit;
+        }
+
+        if (!$tripId) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Trip ID is required']);
+            exit;
+        }
+
+        try {
+            $trip = $this->tripService->getTripById($tripId);
+            
+            if ($trip->added_by !== $userId) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'error' => 'Only the trip owner can generate invite links.']);
+                exit;
+            }
+
+            $url = $this->generateInviteUrl($tripId, $role);
+
+            echo json_encode(['success' => true, 'url' => $url]);
+            exit;
+
+        } catch (\Exception $e) {
+            http_response_code(500); 
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
+    }               
+
     private function generateInviteUrl(int $tripId, string $role): string 
     {
         $baseUrl = "http://" . $_SERVER['HTTP_HOST'];

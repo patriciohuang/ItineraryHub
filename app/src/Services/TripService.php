@@ -14,11 +14,6 @@ class TripService implements ITripService
     {
         $this->tripRepository = new TripRepository();
     }
-    
-    public function getPendingInvites(int $userId): array
-    {
-        return $this->tripRepository->getPendingInvites($userId);
-    }
 
     public function getAllTrips(int $userId): array
     {
