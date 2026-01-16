@@ -222,4 +222,15 @@ class TripItemRepository extends Repository implements ITripItemRepository
         $attachment = $statement->fetch();
         return $attachment ? : null;
     }
+
+    public function updateAttachment(int $tripItemId, string $filePath, string $type): void
+    {
+        $sql = 'UPDATE attachments SET file_path = :path, type = :type WHERE trip_item_id = :item_id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':path' => $filePath,
+            ':type' => $type,
+            ':item_id' => $tripItemId
+        ]);
+    }
 }

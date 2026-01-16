@@ -59,65 +59,47 @@
 
 <script>
 async function handleLinkAction(role, btn) {
+    const originalText = btn.innerHTML;
     const inputField = role === 'PARTICIPANT' ? document.getElementById('linkParticipant') : document.getElementById('linkCollaborator');
-    const errorDiv = role === 'PARTICIPANT' ? document.getElementById('errorParticipant') : document.getElementById('errorCollaborator');
-    const btnTextSpan = btn.querySelector('.btn-text');
-    const originalText = btnTextSpan.innerText;
-
-    if (inputField.value.trim() !== "") {
-        copyToClipboard(inputField, btn, btnTextSpan);
-        return;
-    }
-
     try {
         btn.disabled = true;
-        btnTextSpan.innerText = 'Generating...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Generating...';
         inputField.placeholder = "Contacting server...";
-        errorDiv.innerText = '';
-
-        const tripId = document.getElementById('shareModal').getAttribute('data-trip-id');
-        
+        const tripId = <?= $trip->id ?>;
         const response = await fetch(`/api/trip/generate-invite?trip_id=${tripId}&role=${role}`);
         const data = await response.json();
 
         if (data.success) {
             inputField.value = data.url;
-            copyToClipboard(inputField, btn, btnTextSpan);
+            copyToClipboard(inputField, btn);
         } else {
-            throw new Error(data.error || "Could not generate link");
+            alert("Error: " + (data.error || "Could not generate link"));
+            btn.innerHTML = originalText; 
         }
-
     } catch (error) {
         console.error(error);
-        errorDiv.innerText = error.message;
-        btnTextSpan.innerText = "Retry";
-        inputField.placeholder = "Error generating link";
+        alert("Network error. Please try again.");
+        btn.innerHTML = originalText;
     } finally {
         btn.disabled = false;
     }
 }
 
-function copyToClipboard(inputElement, btn, textSpan) {
-    inputElement.select();
-    inputElement.setSelectionRange(0, 99999);
-
+function copyToClipboard(inputElement, btn) {
     navigator.clipboard.writeText(inputElement.value).then(() => {
-        const originalClass = btn.className;
-        btn.className = 'btn btn-success';
-        btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+        const originalHtml = btn.innerHTML;
+        
+        btn.classList.remove('btn-primary', 'btn-outline-primary');
+        btn.classList.add('btn-success');
+        btn.innerHTML = '<i class="bi bi-check-lg"></i> <span class="btn-text">Copied!</span>';
         
         setTimeout(() => {
-            btn.className = 'btn btn-outline-secondary';
-            btn.innerHTML = '<i class="bi bi-clipboard"></i> Copy Link';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-outline-primary');
+            btn.innerHTML = '<i class="bi bi-clipboard"></i> <span class="btn-text">Copy Link</span>';
         }, 2000);
     }).catch(err => {
         console.error('Failed to copy', err);
-        try {
-            document.execCommand('copy');
-            btn.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
-        } catch (ex) {
-            textSpan.innerText = "Copy Failed";
-        }
     });
 }
 </script>

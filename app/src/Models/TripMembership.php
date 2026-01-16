@@ -16,7 +16,7 @@ class TripMembership {
     public int $trip_id;
     public int $user_id;
     public string $membership_status;
-    public string $role;
+    public ?string $role;
     public ?string $role_offered;
     public ?int $invited_by;
     public string $username;

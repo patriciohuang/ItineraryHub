@@ -26,4 +26,5 @@ interface ITripItemService
     public function addAttachment(int $tripItemId, string $filePath, string $type): void;
     public function getAttachmentsByTripItemId(int $tripItemId): ?Attachment;
     public function getAllCategories(): array;
+    public function updateAttachment(int $tripItemId, string $filePath, string $type): void;
 }

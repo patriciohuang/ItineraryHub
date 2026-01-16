@@ -154,6 +154,38 @@ class TripItemController
 
         try {
             $this->tripItemService->updateTripItem($itemId, (int)$categoryId, $title, $startDate, $endDate, $url, $notes, $userId);
+
+            if (isset($_FILES['attachment']) && $_FILES['attachment']['error'] === UPLOAD_ERR_OK) {
+                
+                $fileTmpPath = $_FILES['attachment']['tmp_name'];
+                $fileName = $_FILES['attachment']['name'];
+                $fileType = $_FILES['attachment']['type'];
+
+                $newFileName = uniqid() . '_' . $fileName;
+                
+                $uploadDir = __DIR__ . '/../../public/uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+                
+                $destPath = $uploadDir . $newFileName;
+
+                if(move_uploaded_file($fileTmpPath, $destPath)) {
+                    $webPath = '/uploads/' . $newFileName;
+                    $existingAttachment = $this->tripItemService->getAttachmentsByTripItemId($itemId);
+
+                    if ($existingAttachment) {
+                        $oldFilePath = __DIR__ . '/../../public' . $existingAttachment->file_path;
+
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                        $this->tripItemService->updateAttachment($itemId, $webPath, $fileType);
+                    } else {    
+                        $this->tripItemService->addAttachment($itemId, $webPath, $fileType);
+                    }
+                }
+            }
             
             $_SESSION['success'] = "Item updated successfully!";
             header("Location: /trip/item/$itemId");

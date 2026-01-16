@@ -93,4 +93,8 @@ class TripItemService implements ITripItemService
     {
         return $this->tripItemRepository->getAttachmentsByTripItemId($tripItemId);
     }
+    public function updateAttachment(int $tripItemId, string $filePath, string $type): void
+    {
+        $this->tripItemRepository->updateAttachment($tripItemId, $filePath, $type);
+    }
 }
