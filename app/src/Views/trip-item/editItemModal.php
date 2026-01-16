@@ -10,7 +10,7 @@
                     <?php if (isset($_SESSION['error_edit_item'])): ?>
                         <?php require __DIR__ . '/../partials/messages.php'; ?>
                     <?php endif; ?>
-                    <?php require __DIR__ . '/../partials/edit-item-form.php'; ?>
+                    <?php require __DIR__ . '/../partials/editItemForm.php'; ?>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>

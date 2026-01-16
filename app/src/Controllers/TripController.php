@@ -2,27 +2,21 @@
 
 namespace App\Controllers;
 
-use App\Services\ITripService;
-use App\Services\TripService;
 use App\ViewModels\TripsViewModel;
-
+use App\Services\IMembershipService; 
+use App\Services\ITripItemService;
+use App\Services\ITripService;
 
 class TripController extends BaseController
 {
-    private ITripService $tripService;
-
-    public function __construct()
+    public function __construct(IMembershipService $membershipService, ITripItemService $tripItemService, ITripService $tripService)
     {
-        parent::__construct();
-
-        $this->tripService = new TripService();
+        parent::__construct($membershipService, $tripItemService, $tripService);
     }
 
-    public function showAddTrip()
+    public function addTripView()
     {
-        $userId = $_SESSION['user_id'];
-        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
-        require __DIR__ . '/../Views/trip/trip-add.php';
+        return $this->view();
     }
 
     public function addTrip()
@@ -67,7 +61,7 @@ class TripController extends BaseController
         }
     }
 
-    public function seeTripDetail(array $params)
+    public function tripDetailView(array $params)
     {
         $id = $params['id'] ?? null;
         $origin = $_GET['from'] ?? 'home';
@@ -92,7 +86,18 @@ class TripController extends BaseController
 
             $oldInput = $_SESSION['form_input'] ?? [];
             unset($_SESSION['form_input']);
-            require __DIR__ . '/../Views/trip/trip-detail.php';
+            return $this->view([
+                'trip' => $trip,
+                'items' => $items,
+                'categories' => $categories,
+                'isOwner' => $isOwner,
+                'isParticipant' => $isParticipant,
+                'origin' => $origin,
+                'pendingInvites' => $pendingInvites,
+                'pendingSuggestions' => $pendingSuggestions,
+                'totalNotifications' => $totalNotifications,
+                'oldInput' => $oldInput
+            ]);
         } catch (\Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             header('Location: /');

@@ -26,8 +26,8 @@ The project follows a strict MVC pattern without using a framework:
 * **Views:** PHP templates.
 
 ### Coding Patterns
-* **Explicit Dependency Instantiation:** I manually instantiate services in the controller constructors (e.g., `$this->tripService = new TripService();`) instead of using a Dependency Injection Container. I did this to keep the data flow explicit and easier to debug.
-* **Centralized Routing:** All routes are defined in `public/index.php` using FastRoute.
+* **Dependency Injection:** Instead of manually creating objects, I built a custom Container. Controllers declare their dependencies (e.g., ITripService) in their constructors, and the container automatically resolves and injects the correct implementation. This follows the Dependency Inversion Principle.
+* **Automatic View Mapping:** Controllers automatically find their corresponding view file based on the method name (e.g., HomeController::index to views/home/index.php), removing the need for repetitive require statements.
 
 ### AJAX & API
 To update pages without refreshing (Rubric requirement), I implemented a Javascript fetch handler:

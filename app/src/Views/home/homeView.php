@@ -60,7 +60,7 @@
 </main>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
-<?php require __DIR__ . '/../partials/delete-modal.php'; ?>
+<?php require __DIR__ . '/../partials/deleteModal.php'; ?>
 <script>
     const deleteModal = document.getElementById('deleteTripModal');
     deleteModal.addEventListener('show.bs.modal', event => {

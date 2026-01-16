@@ -2,31 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Services\ITripService;
-use App\Services\TripService;
-use App\Services\IMembershipService;
-use App\Services\MembershipService;
 use App\ViewModels\TripsViewModel;
+use App\Services\IMembershipService; 
+use App\Services\ITripItemService;
+use App\Services\ITripService;
 
-
-class MembershipController
+class MembershipController extends BaseController
 {
-    private ITripService $tripService;
-    private IMembershipService $membershipService;
-
-    public function __construct()
+    public function __construct(IMembershipService $membershipService, ITripItemService $tripItemService, ITripService $tripService)
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
-        }
-
-        $this->tripService = new TripService();
-        $this->membershipService = new MembershipService();
+        parent::__construct($membershipService, $tripItemService, $tripService);
     }
 
     public function getInviteLinkAPI()
@@ -80,7 +65,7 @@ class MembershipController
         return "{$baseUrl}/trip/join?{$data}&sig={$signature}";
     }
 
-    public function showJoinConfirmation()
+    public function joinConfirmationView()
     {
         $tripId = $_GET['trip_id'] ?? null;
         $roleOffered = $_GET['role'] ?? null;
@@ -138,7 +123,11 @@ class MembershipController
             // Since we trust this user (they are logged in + pending), give them a fresh one.
             $data = "trip_id={$tripId}&role={$roleOffered}";
             $signature = hash_hmac('sha256', $data, 'SECRET_APP_KEY');
-            require __DIR__ . '/../Views/trip/join-confirmation.php';
+            return $this->view([
+                'trip' => $trip, 
+                'roleOffered' => $roleOffered, 
+                'signature' => $signature
+            ], 'trip/joinConfirmationView');
             
         } catch (\Exception $e) {
             $_SESSION['error'] = "Trip not found.";

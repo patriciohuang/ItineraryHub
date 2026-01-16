@@ -1,21 +1,30 @@
 <?php
 
 namespace App\Controllers;
-
+use App\Services\IUserService;
 use App\Services\UserService;
+use App\Services\IMembershipService; 
+use App\Services\ITripItemService;
+use App\Services\ITripService;
 
-class AuthController
+class AuthController extends BaseController
 {
-    private $userService;
+    private IUserService $userService;
 
-    public function __construct()
+    public function __construct(IUserService $userService, IMembershipService $membershipService, ITripItemService $tripItemService, ITripService $tripService)
     {
-        $this->userService = new UserService();
+        parent::__construct($membershipService, $tripItemService, $tripService);
+        $this->userService = $userService;
+    }
+    
+    protected function enforceAuthentication(): void
+    {
+        // Do nothing! Allow public access to login/register pages.
     }
 
-    public function showLogin()
+    public function loginView()
     {
-        require __DIR__ . '/../Views/auth/login.php';
+        return $this->view();
     }
 
     public function login()
@@ -58,9 +67,9 @@ class AuthController
         
     }
 
-    public function showRegister()
+    public function registerView()
     {
-        require __DIR__ . '/../Views/auth/register.php';
+        return $this->view();
     }
 
     public function register()

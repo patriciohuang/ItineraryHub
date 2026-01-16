@@ -99,17 +99,17 @@ switch ($origin ?? 'home') {
             </p>
         </div>
     <?php else: ?>
-        <?php require __DIR__ . '/../trip-item/trip-item.php'; ?>
+        <?php require __DIR__ . '/../trip-item/tripItemView.php'; ?>
     <?php endif; ?>
 
 </main>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
-<?php require __DIR__ . '/../trip-item/trip-add-item-modal.php'; ?>
-<?php require __DIR__ . '/../trip/share-modal.php'; ?>
+<?php require __DIR__ . '/../trip-item/addItemModal.php'; ?>
+<?php require __DIR__ . '/../trip/shareModalView.php'; ?>
 
 <?php if ($isOwner): ?>
-    <?php require __DIR__ . '/../trip/trip-edit-modal.php'; ?>
+    <?php require __DIR__ . '/../trip/editTripModal.php'; ?>
 <?php endif; ?>
 
 <?php if (isset($_SESSION['error_add_item'])): ?>

@@ -1,29 +1,15 @@
 <?php
 
 namespace App\Controllers;
+use App\Services\IMembershipService; 
+use App\Services\ITripItemService;
+use App\Services\ITripService;
 
-use App\Services\TripItemService;
-use App\Services\MembershipService;
-use App\Services\TripService;
-
-class TripItemController
+class TripItemController extends BaseController
 {
-    private TripItemService $tripItemService;
-    private MembershipService $membershipService;
-    private TripService $tripService;
-    public function __construct()
+    public function __construct(IMembershipService $membershipService, ITripItemService $tripItemService, ITripService $tripService)
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /login');
-            exit;
-        }
-        $this->tripItemService = new TripItemService();
-        $this->membershipService = new MembershipService();
-        $this->tripService = new TripService();
+        parent::__construct($membershipService, $tripItemService, $tripService);
     }
 
     public function addTripItem(array $params)
@@ -93,7 +79,7 @@ class TripItemController
         }
     }
 
-    public function showTripItemDetail(array $params)
+    public function itemDetailView(array $params)
     {
         $itemId = (int) $params['id'];
         $item = $this->tripItemService->getTripItemById($itemId);
@@ -115,7 +101,16 @@ class TripItemController
             exit;
         }
 
-        require __DIR__ . '/../Views/trip-item/trip-item-detail.php';
+        return $this->view([
+            'item' => $item,
+            'categories' => $categories,
+            'attachment' => $attachment,
+            'isOwner' => $isOwner,
+            'participants' => $participants,
+            'allTripMembers' => $allTripMembers,
+            'oldInput' => $oldInput,
+            'currentUserId' => $currentUserId
+        ], 'trip-item/itemDetailView');
     }
 
     public function editTripItem(array $params)

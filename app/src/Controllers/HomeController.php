@@ -2,63 +2,49 @@
 
 namespace App\Controllers;
 
-use App\Services\ITripService;
-use App\Services\TripService;
 use App\ViewModels\TripsViewModel;
+use App\Services\IMembershipService; 
+use App\Services\ITripItemService;
+use App\Services\ITripService;
 
 class HomeController extends BaseController
 {
-    private ITripService $tripService;
-
-    public function __construct()
+    public function __construct(IMembershipService $membershipService, ITripItemService $tripItemService, ITripService $tripService)
     {
-        parent::__construct(); 
-        
-        $this->tripService = new TripService();
+        parent::__construct($membershipService, $tripItemService, $tripService);
     }
 
-    public function home()
+    public function homeView()
     {
         $userId = $_SESSION['user_id'];
         
         $trips = $this->tripService->getAllTrips($userId);
         $vm = new TripsViewModel($trips);
 
-        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
-
-        require __DIR__ . '/../Views/trip/home.php';
+        return $this->view(['vm' => $vm]);
     }
 
-    public function seeSharedTrips()
+    public function sharedTripsView()
     {
         $userId = $_SESSION['user_id'];
         
         $trips = $this->tripService->getAllSharedTrip($userId);
         $vm = new TripsViewModel($trips);
-
-        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
-
-        require __DIR__ . '/../Views/trip/trip-shared.php';
+        return $this->view(['vm' => $vm]);
     }
 
-    public function seeFollowingTrips()
+    public function followingTripsView()
     {
         $userId = $_SESSION['user_id'];
         
         $trips = $this->tripService->getAllFollowingTrip($userId);
         $vm = new TripsViewModel($trips);
-
-        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
-
-        require __DIR__ . '/../Views/trip/trip-following.php';
+        return $this->view(['vm' => $vm]);
     }
 
-    public function notifications()
+    public function notificationsView()
     {
         $userId = $_SESSION['user_id'];
-        
-        list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
-
-        require __DIR__ . '/../Views/trip/notifications.php';
+        return $this->view(['notifications']);
     }
 }
