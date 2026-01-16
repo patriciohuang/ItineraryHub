@@ -1,6 +1,6 @@
 <div class="mb-3">
-    <label for="category" class="form-label">Type of Activity <span class="text-danger">*</span></label>
-    <select name="category_id" id="category" class="form-select">
+    <label for="category" class="form-label">Type of Activity <span class="text-danger" aria-hidden="true">*</span></label>
+    <select name="category_id" id="category" class="form-select" required>
         <option value="" disabled <?= empty($oldInput['category_id']) ? 'selected' : '' ?>>
             Choose a category...
         </option>
@@ -17,11 +17,12 @@
 </div>
 
 <div class="mb-3">
-    <label for="title" class="form-label">Title (e.g., Flight to Paris, Hilton Hotel) <span class="text-danger">*</span></label>
-    <input type="text" name="title" id="title" class="form-control" value="<?= htmlspecialchars($oldInput['title'] ?? '') ?>">
+    <label for="title" class="form-label">Title (e.g., Flight to Paris, Hilton Hotel) <span class="text-danger" aria-hidden="true">*</span></label>
+    <input type="text" name="title" id="title" class="form-control" required value="<?= htmlspecialchars($oldInput['title'] ?? '') ?>">
 </div>
 
-<div class="row">
+<fieldset class="row">
+    <legend class="col-form-label col-12 pt-0 fw-bold small text-uppercase text-muted">Timing</legend>
     <div class="col-md-6 mb-3">
         <label for="start_date" class="form-label">Start Time</label>
         <input type="datetime-local" name="start_date" id="start_date" class="form-control" value="<?= htmlspecialchars($oldInput['start_date'] ?? '') ?>">
@@ -30,7 +31,7 @@
         <label for="end_date" class="form-label">End Time</label>
         <input type="datetime-local" name="end_date" id="end_date" class="form-control" value="<?= htmlspecialchars($oldInput['end_date'] ?? '') ?>">
     </div>
-</div>
+</fieldset>
 <div class="row">
     <div class="col-md-6 mb-3">
         <label for="url" class="form-label">Booking Link / Location URL (Optional)</label>

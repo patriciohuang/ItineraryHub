@@ -24,6 +24,8 @@ $dispatcher = simpleDispatcher(function (RouteCollector $r) {
     $r->addRoute('POST', '/trip/{id}/item/review', ['App\Controllers\TripItemController', 'reviewItem']);
     $r->addRoute('POST', '/trip/{id}/item/suggest', ['App\Controllers\TripItemController', 'suggestItem']);
     $r->addRoute('POST', '/trip/item/{id:\d+}/process', ['App\Controllers\TripItemController', 'processSuggestedItem']);
+    $r->addRoute('POST', '/trip/item/{id}/participant/add', ['App\Controllers\TripItemController', 'addParticipantToItem']);
+    $r->addRoute('POST', '/trip/item/{id}/participant/remove', ['App\Controllers\TripItemController', 'removeParticipantFromItem']);
     $r->addRoute('POST', '/trip/{id}/item/add', ['App\Controllers\TripItemController', 'addTripItem']);
     $r->addRoute('GET', '/trip/item/{id}', ['App\Controllers\TripItemController', 'showTripItemDetail']);
     $r->addRoute('POST', '/trip/item/{id}', ['App\Controllers\TripItemController', 'editTripItem']);

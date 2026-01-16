@@ -17,7 +17,7 @@ switch ($origin ?? 'home') {
         break;
 }
 ?>
-<div class="container mt-4">
+<main class="container mt-4">
     
     <div class="d-flex justify-content-between align-items-center mb-3">
         <a href="<?= $backLink ?>" class="btn btn-outline-secondary">
@@ -31,10 +31,10 @@ switch ($origin ?? 'home') {
         <?php endif; ?>
     </div>
 
-    <div class="card shadow-sm mb-4 border-0 bg-light">
+    <section class="card shadow-sm mb-4 border-0 bg-light">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start">
-                <div>
+                <header>
                     <h1 class="display-6 fw-bold text-primary mb-2">
                         <?= htmlspecialchars($trip->title) ?>
                     </h1>
@@ -59,8 +59,8 @@ switch ($origin ?? 'home') {
                         <?php endif; ?>
                     </div>
 
-                    <p class="lead fs-6 mb-0"><?= htmlspecialchars($trip->description ?? '') ?></p>
-                </div>
+                    <p class="fs-6 mb-0"><?= htmlspecialchars($trip->description ?? '') ?></p>
+                </header>
 
                 <?php if ($isOwner): ?>
                     <div>
@@ -71,10 +71,10 @@ switch ($origin ?? 'home') {
                 <?php endif; ?>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Itinerary</h3>
+    <section class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Itinerary</h2>
         
         <?php if ($isOwner): ?>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addItemModal">
@@ -85,7 +85,7 @@ switch ($origin ?? 'home') {
                 <i class="bi bi-plus-lg"></i> Suggest Item
             </button>
         <?php endif; ?>
-    </div>
+    </section>
 
     <?php if (!isset($_SESSION['error_add_item'])): ?>
         <?php require __DIR__ . '/../partials/messages.php'; ?>
@@ -102,7 +102,7 @@ switch ($origin ?? 'home') {
         <?php require __DIR__ . '/../trip-item/trip-item.php'; ?>
     <?php endif; ?>
 
-</div>
+</main>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
 <?php require __DIR__ . '/../trip-item/trip-add-item-modal.php'; ?>

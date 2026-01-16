@@ -12,7 +12,11 @@ class TripItemRepository extends Repository implements ITripItemRepository
 {
     public function getTripItems(int $tripId): array
     {
-        $sql = 'SELECT ti.id, ti.trip_id, ti.category_id, ti.title, ti.start_date, ti.end_date, ti.url, ti.notes, ti.created_by, c.name AS category_name
+        // Retrieve only APPROVED and PUBLISHED items
+        // Include participant names as a comma-separated string, I use GROUP_CONCAT for that otherwise it would return multiple rows per item
+        $sql = 'SELECT ti.id, ti.trip_id, ti.category_id, ti.title, ti.start_date, ti.end_date, ti.url, ti.notes, ti.created_by, c.name AS category_name, (SELECT GROUP_CONCAT(u.username SEPARATOR ", ") FROM trip_item_participants tip
+                        JOIN users u ON tip.user_id = u.id
+                        WHERE tip.trip_item_id = ti.id) AS participant_name
                 FROM trip_items ti
                 JOIN trips t ON ti.trip_id = t.id
                 JOIN categories c ON ti.category_id = c.id
@@ -24,7 +28,7 @@ class TripItemRepository extends Repository implements ITripItemRepository
             ':trip_id' => $tripId,
         ]);
         
-        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class)? : [];
     }
 
     public function createTripItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): int
@@ -96,7 +100,7 @@ class TripItemRepository extends Repository implements ITripItemRepository
         ]);
     }
 
-    public function suggestItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): void
+    public function suggestItem(int $tripId, int $categoryId, string $title, ?string $startDate, ?string $endDate, string $url, string $notes, int $userId): int
     {
         $sql = 'INSERT INTO trip_items 
                 (trip_id, category_id, title, start_date, end_date, url, notes, created_by, status, is_suggested, suggested_by) 
@@ -115,6 +119,7 @@ class TripItemRepository extends Repository implements ITripItemRepository
             ':created_by' => $userId,
             ':suggested_by' => $userId
         ]);
+        return (int) $this->getConnection()->lastInsertId();
     }
 
     public function approveSuggestedItem(int $itemId, int $userId): void
@@ -155,6 +160,38 @@ class TripItemRepository extends Repository implements ITripItemRepository
         $statement->execute([':user_id' => $userId]);
 
         return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripItem::class);
+    }
+
+    public function addParticipantToItem(int $itemId, int $userId): void
+    {
+        $sql = 'INSERT IGNORE INTO trip_item_participants (trip_item_id, user_id) VALUES (:item_id, :user_id)';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':item_id' => $itemId,
+            ':user_id' => $userId
+        ]);
+    }
+
+    public function getParticipantsByItemId(int $itemId): array
+    {
+        $sql = 'SELECT u.id, u.username, u.email FROM trip_item_participants tip
+                JOIN users u ON tip.user_id = u.id
+                WHERE tip.trip_item_id = :item_id';
+        
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':item_id' => $itemId]);
+
+        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\User::class);
+    }
+
+    public function removeParticipantFromItem(int $itemId, int $userId): void
+    {
+        $sql = 'DELETE FROM trip_item_participants WHERE trip_item_id = :item_id AND user_id = :user_id';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([
+            ':item_id' => $itemId,
+            ':user_id' => $userId
+        ]);
     }
 
     public function getAllCategories(): array

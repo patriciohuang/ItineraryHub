@@ -5,17 +5,14 @@
 <?php require __DIR__ . '/../partials/header.php'; ?>
 <?php require __DIR__ . '/../partials/navbar.php'; ?>
 
-<div class="container mt-4">
-    
+<main class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>My Trips</h1>
         <a href="/trip/add" class="btn btn-primary">
             + Plan New Trip
         </a>
     </div>
-
     <?php require __DIR__ . '/../partials/messages.php'; ?>
-
     <div class="row">
         <?php if (empty($vm->trips)): ?>
             <div class="col-12">
@@ -37,11 +34,11 @@
                                         class="btn btn-outline-danger btn-sm" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteTripModal"
-                                        data-bs-id="<?= $trip->id ?>">
-                                    <i class="bi bi-trash"></i>
+                                        data-bs-id="<?= $trip->id ?>"
+                                        aria-label="Delete Trip">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            
                             <p class="card-subtitle mb-2 text-muted">
                                 <i class="bi bi-calendar3"></i> 
                                 <?= date('d M, Y', strtotime($trip->start_date)) ?> 
@@ -52,7 +49,6 @@
                                 <?= htmlspecialchars($trip->description ?? 'No description provided.') ?>
                             </p>
                         </div>
-                        
                         <div class="card-footer bg-white border-top-0 pb-3">
                             <a href="/trip/<?= htmlspecialchars($trip->id) ?>?from=home" class="btn btn-outline-primary btn-sm w-100">View Details</a>
                         </div>
@@ -61,7 +57,7 @@
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
-</div>
+</main>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
 <?php require __DIR__ . '/../partials/delete-modal.php'; ?>

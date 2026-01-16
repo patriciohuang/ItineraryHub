@@ -46,4 +46,9 @@ class MembershipService implements IMembershipService
     {
         return $this->membershipRepository->getPendingInvites($userId);
     }
+
+    public function getMembersByTripId(int $tripId): array
+    {
+        return $this->membershipRepository->getMembersByTripId($tripId);
+    }
 }

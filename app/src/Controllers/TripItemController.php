@@ -3,11 +3,14 @@
 namespace App\Controllers;
 
 use App\Services\TripItemService;
+use App\Services\MembershipService;
+use App\Services\TripService;
 
 class TripItemController
 {
     private TripItemService $tripItemService;
-
+    private MembershipService $membershipService;
+    private TripService $tripService;
     public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -19,6 +22,8 @@ class TripItemController
             exit;
         }
         $this->tripItemService = new TripItemService();
+        $this->membershipService = new MembershipService();
+        $this->tripService = new TripService();
     }
 
     public function addTripItem(array $params)
@@ -94,12 +99,15 @@ class TripItemController
         $item = $this->tripItemService->getTripItemById($itemId);
         $categories = $this->tripItemService->getAllCategories();
         $attachment = $this->tripItemService->getAttachmentsByTripItemId($itemId);
-
+        $ownerTrip = $this->tripService->getTripById($item->trip_id);
         $oldInput = $_SESSION['form_input'] ?? [];
         unset($_SESSION['form_input']);
 
         $currentUserId = $_SESSION['user_id'] ?? 0;
-        $isOwner = ($item->created_by === $currentUserId);
+        $isOwner = ($ownerTrip->added_by === $currentUserId);
+
+        $participants = $this->tripItemService->getParticipantsByItemId($itemId);
+        $allTripMembers = $this->membershipService->getMembersByTripId($item->trip_id);
 
         if (!$item) {
             $_SESSION['error'] = "Item not found.";
@@ -244,6 +252,42 @@ class TripItemController
         } catch (\Exception $e) {
             $_SESSION['error'] = "Error processing suggestion: " . $e->getMessage();
             header("Location: /trip/$tripId");
+            exit;
+        }
+    }
+
+    public function addParticipantToItem(array $params)
+    {
+        $itemId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+        $memeberUserId = (int) $_POST['user_id'];
+        $item = $this->tripItemService->getTripItemById($itemId);
+        if($item->created_by !== $userId) {
+            $_SESSION['error'] = "You do not have permission to add participants to this item.";
+            header("Location: /trip/item/$itemId");
+            exit;
+        } else {
+            $this->tripItemService->addParticipantToItem($itemId, $memeberUserId);
+            $_SESSION['success'] = "You have been added a participant to this item.";
+            header("Location: /trip/item/$itemId");
+            exit;
+        }
+    }
+
+    public function removeParticipantFromItem(array $params)
+    {
+        $itemId = (int) $params['id'];
+        $userId = $_SESSION['user_id'];
+        $memberUserId = (int) $_POST['user_id'];
+        $item = $this->tripItemService->getTripItemById($itemId);
+        if($item->created_by !== $userId) {
+            $_SESSION['error'] = "You do not have permission to remove participants from this item.";
+            header("Location: /trip/item/$itemId");
+            exit;
+        } else {
+            $this->tripItemService->removeParticipantFromItem($itemId, $memberUserId);
+            $_SESSION['success'] = "Participant removed from this item.";
+            header("Location: /trip/item/$itemId");
             exit;
         }
     }

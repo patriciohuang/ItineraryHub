@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Framework\Repository;
 use App\Repositories\IMembershipRepository;
+use App\Models\TripMembership;
 
 class MembershipRepository extends Repository implements IMembershipRepository
 {
@@ -85,6 +86,16 @@ class MembershipRepository extends Repository implements IMembershipRepository
             WHERE tm.user_id = :user_id AND tm.membership_status = "PENDING"';
         $statement = $this->getConnection()->prepare($sql);
         $statement->execute([':user_id' => $userId]);
-        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripMembership::class);
+    }
+
+    public function getMembersByTripId(int $tripId): array
+    {
+        $sql = 'SELECT tm.*, u.username, u.first_name, u.last_name FROM trip_memberships tm
+            JOIN users u ON tm.user_id = u.id
+            WHERE tm.trip_id = :trip_id AND tm.membership_status = "ACCEPTED" AND tm.role = "PARTICIPANT"';
+        $statement = $this->getConnection()->prepare($sql);
+        $statement->execute([':trip_id' => $tripId]);
+        return $statement->fetchAll(\PDO::FETCH_CLASS, \App\Models\TripMembership::class);
     }
 }

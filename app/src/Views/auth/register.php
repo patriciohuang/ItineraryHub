@@ -9,26 +9,26 @@
                     <?php require __DIR__ . '/../partials/messages.php'; ?>
                     <form action="/register" method="POST">
                         <div class="mb-3">
-                            <label>Username <span class="text-danger">*</span></label>
-                            <input type="text" name="username" class="form-control">
+                            <label for="username">Username <span class="text-danger">*</span></label>
+                            <input type="text" name="username" id="username" class="form-control">
                         </div>
                         <div class="d-flex gap-2">
                             <div class="mb-3">
-                                <label>First Name</label>
-                                <input type="text" name="first_name" class="form-control">
+                                <label for="first_name">First Name</label>
+                                <input type="text" name="first_name" id="firstname" class="form-control">
                             </div>
                             <div class="mb-3">
-                                <label>Last Name</label>
-                                <input type="text" name="last_name" class="form-control">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" name="last_name" id="lastname" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Email <span class="text-danger">*</span></label>
-                            <input type="email" name="email" class="form-control">
+                            <label for="email">Email <span class="text-danger">*</span></label>
+                            <input type="email" name="email" id="email" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label>Password <span class="text-danger">*</span></label>
-                            <input type="password" name="password" class="form-control">
+                            <label for="password">Password <span class="text-danger">*</span></label>
+                            <input type="password" name="password" id="password" class="form-control">
                         </div>
                         <button type="submit" class="btn btn-success w-100">Register</button>
                     </form>

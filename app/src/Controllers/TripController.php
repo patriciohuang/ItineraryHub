@@ -50,6 +50,8 @@ class TripController extends BaseController
             header('Location: /trip/add');
             exit;
         }
+        $oldInput = $_SESSION['form_input'] ?? [];
+        unset($_SESSION['form_input']);
         try
         {
             $tripId = $this->tripService->createTrip($userId, $title, $description, $startDate, $endDate);
@@ -80,10 +82,11 @@ class TripController extends BaseController
             $items = $this->tripItemService->getTripItems($id);
             $categories = $this->tripItemService->getAllCategories();
             $role = $this->membershipService->getTripMember($id, $userId);
+            $memberRole = $role['role'] ?? null; 
+            $isParticipant = ($memberRole === 'PARTICIPANT');
 
             $currentUserId = $_SESSION['user_id'] ?? 0;
             $isOwner = ($trip->added_by === $currentUserId);
-            $isParticipant = (is_array($role) && $role['role'] === 'PARTICIPANT');
 
             list($pendingInvites, $pendingSuggestions, $totalNotifications) = $this->getNotificationData($userId);
 
@@ -112,6 +115,11 @@ class TripController extends BaseController
             header("Location: /trip/$tripId");
             exit;
         }
+        if (strtotime($startDate) > strtotime($endDate)) {
+            $_SESSION['error'] = "Start date cannot be later than end date.";
+            header("Location: /trip/$tripId");
+            exit;
+        }
 
         try {
             $this->tripService->updateTrip($tripId, $title, $description, $startDate, $endDate);
@@ -133,7 +141,6 @@ class TripController extends BaseController
 
         try {
             $this->tripService->deleteTrip($userId, $tripId);
-
             $_SESSION['success'] = "Trip deleted successfully!";
             header("Location: /");
             exit;

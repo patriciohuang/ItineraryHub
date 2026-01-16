@@ -13,10 +13,14 @@ class TripMembership {
     public const ROLE_PARTICIPANT = 'PARTICIPANT';
 
     public int $id;
-    public int $tripId;
-    public int $userId;
-    public string $membershipStatus;
+    public int $trip_id;
+    public int $user_id;
+    public string $membership_status;
     public string $role;
-    public string $roleOffered;
-    public int $invitedBy;
+    public ?string $role_offered;
+    public ?int $invited_by;
+    public string $username;
+    public string $first_name;
+    public string $last_name;
+    public ?string $title = null;
 }

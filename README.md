@@ -1,65 +1,47 @@
-# Docker template for PHP projects
-This repository provides a starting template for PHP application development.
+# Itinerary Hub
 
-It contains:
-* NGINX webserver
-* PHP FastCGI Process Manager with PDO MySQL support
-* MariaDB (GPL MySQL fork)
-* PHPMyAdmin
-* Composer
-* Composer package [nikic/fast-route](https://github.com/nikic/FastRoute) for routing
+A web application to centralize and organize travel plans (flights, hotels, activities), especially for groups. It solves the problem of fragmented planning.
+The core feature is a collaborative, chronological “Trip” timeline. Users can create, update, and delete their trips, and invite friends for shared planning.
 
-## Setup
+##  Setup & Run
 
-1. Install Docker Desktop on Windows or Mac, or Docker Engine on Linux.
-1. Clone the project
+1.  **Start the Application**
+    Run the following command in the project root:
+    ```bash
+    docker compose up
+    ```
+    The application will be running at **http://localhost**.
 
-## Usage
+## Test Credentials
+You can register a new account, or use these pre-made test accounts (if you imported the database):
+* **User 1 (Owner):** `patricio@test.com` / `password123`
+* **User 2 (Collaborator):** `teacher@test.com` / `password123`
 
-In a terminal, from the cloned project folder, run:
-```bash
-docker compose up
-```
+## Technical Implementation
 
-### Composer Autoload
+### Architecture (MVC)
+The project follows a strict MVC pattern without using a framework:
+* **Controllers:** Handle request logic.
+* **Services:** Handle business logic and permissions.
+* **Views:** PHP templates.
 
-This template is configured to use Composer for PSR-4 autoloading:
+### Coding Patterns
+* **Explicit Dependency Instantiation:** I manually instantiate services in the controller constructors (e.g., `$this->tripService = new TripService();`) instead of using a Dependency Injection Container. I did this to keep the data flow explicit and easier to debug.
+* **Centralized Routing:** All routes are defined in `public/index.php` using FastRoute.
 
-- Namespace `App\\` is mapped to `app/src/`.
+### AJAX & API
+To update pages without refreshing (Rubric requirement), I implemented a Javascript fetch handler:
+* **File:** `app/src/Views/trip/share-modal.php`
+* **Logic:** The JavaScript calls the `/api/trip/generate-invite` endpoint (TripController), receives a JSON response, and updates the invite link input field dynamically.
 
-To install dependencies and generate the autoloader, run:
+## Compliance
 
-```bash
-docker compose run --rm php composer install
-```
+### GDPR (Privacy)
+* **Data Minimization:** Registration only requires a username, email, and password. Extra personal data is optional.
+* **Right to Erasure:** The "Delete Trip" function uses a database `ON DELETE CASCADE` constraint. Deleting a trip permanently removes all associated items and memberships from the database.
+* **Consent:** Users must click "Accept" on an invite page (`join-confirmation.php`) before they are added to a trip.
 
-If you add new classes or change namespaces, regenerate the autoloader:
-
-```bash
-docker compose run --rm php composer dump-autoload
-```
-
-Example usage is wired in `app/public/index.php` and a sample class exists at `app/src/hello.php`.
-
-### NGINX
-
-NGINX will now serve files in the app/public folder.
-
-Go to [http://localhost/hello.php](http://localhost/hello.php). You should see a hello world message.
-
-### PHPMyAdmin
-
-PHPMyAdmin provides basic database administration. It is accessible at [localhost:8080](localhost:8080).
-
-Credentials are defined in `docker-compose.yml`. They are: developer/secret123
-
-
-### Stopping the docker container
-
-If you want to stop the containers, press Ctrl+C. 
-
-Or run:
-```bash
-docker compose down
-```
-
+### WCAG (Accessibility)
+* **Forms:** All inputs use `label for="..."` linked to `id="..."` (e.g., `login.php`, `trip-add.php`).
+* **Icon Buttons:** Buttons with no text (like the Delete trash icon) include `aria-label` attributes to define their function for screen readers.
+* **Status Updates:** The loading spinner in the Share Modal uses `role="status"` to announce changes to assistive technology.

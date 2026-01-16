@@ -21,4 +21,5 @@ class TripItem {
     public string $category_name;
     public ?string $suggester_name;
     public ?string $trip_title;
+    public ?string $participant_name;
 }

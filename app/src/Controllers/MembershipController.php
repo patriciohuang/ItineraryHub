@@ -115,7 +115,6 @@ class MembershipController
                 header("Location: /trip/$tripId");
                 exit;
             }
-
             if (!$existingMember) {
                 $this->membershipService->addMemberToTrip(
                     $tripId, 
@@ -125,6 +124,7 @@ class MembershipController
                     $trip->added_by
                 );
             } 
+            
 
             elseif ($existingMember['role'] === $roleOffered) {
                 $_SESSION['success'] = "You are already a member.";

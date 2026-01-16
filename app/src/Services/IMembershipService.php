@@ -11,4 +11,5 @@ interface IMembershipService
     public function updateOfferedRole(int $tripId, int $userId, string $status, string $roleOffered): void;
     public function updateMemberStatus(int $tripId, int $userId, string $status): void;
     public function getPendingInvites(int $userId): array;
+    public function getMembersByTripId(int $tripId): array;
 }
